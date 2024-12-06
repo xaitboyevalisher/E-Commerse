@@ -10,7 +10,6 @@ import {
   Col,
   Carousel,
   Input,
-  Spin,
   message,
 } from "antd";
 import { BiChevronLeft, BiChevronRight } from "react-icons/bi";
@@ -27,31 +26,31 @@ const { Content } = Layout;
 const Home = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
-  const [loading, setLoading] = useState(false);
   const [isDesktop, setIsDesktop] = useState(window.innerWidth >= 774);
   const { t } = useTranslation();
+  const { data: categories } = useQuery<Category[]>(
+    ["categories"],
+    async () => {
+      const response = await api.get("category?page=1&limit=4");
+      return response.data;
+    }
+  );
 
-  const { data: categories, isLoading: categoriesLoading } = useQuery<
-    Category[]
-  >(["categories"], async () => {
-    const response = await api.get("category?page=1&limit=4");
+  const { data: services = [] } = useQuery<Service[]>(
+    ["services"],
+    async () => {
+      const response = await api.get("service");
+      return response.data;
+    }
+  );
 
-    return response.data;
-  });
-
-  const { data: services = [], isLoading: servicesLoading } = useQuery<
-    Service[]
-  >(["services"], async () => {
-    const response = await api.get("service");
-    return response.data;
-  });
-
-  const { data: popularProducts = [], isLoading: productsLoading } = useQuery<
-    Product[]
-  >(["products"], async () => {
-    const response = await api.get("product");
-    return response.data;
-  });
+  const { data: popularProducts = [] } = useQuery<Product[]>(
+    ["products"],
+    async () => {
+      const response = await api.get("product");
+      return response.data;
+    }
+  );
 
   const carouselRef = useRef<any>(null);
   const [currentSlide, setCurrentSlide] = useState(0);
@@ -69,19 +68,7 @@ const Home = () => {
     };
   }, []);
 
-  if (categoriesLoading || productsLoading || servicesLoading) {
-    return (
-      <div
-        className="flex justify-center items-center"
-        style={{ height: "100vh" }}
-      >
-        <Spin size="large" />
-      </div>
-    );
-  }
-
   const handleSubmit = async () => {
-    setLoading(true);
     const contactData: ContactRequest = { name, email };
 
     try {
@@ -102,8 +89,6 @@ const Home = () => {
     } catch (error) {
       console.error("Xatolik yuz berdi:", error);
       message.error("Xatolik yuz berdi, qayta urinib ko'ring.");
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -405,7 +390,6 @@ const Home = () => {
                 type="primary"
                 className="w-full sm:w-auto"
                 onClick={handleSubmit}
-                loading={loading}
                 disabled={!name || !email}
               >
                 {t("submit")}

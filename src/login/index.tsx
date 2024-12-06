@@ -9,33 +9,32 @@ export const LoginPage = () => {
   const navigate = useNavigate();
 
   const api = axios.create({
-    baseURL: "http://54.168.41.60:8080",
+    baseURL: "http://8.210.211.217:8080/",
     headers: {
       "Content-Type": "application/json",
     },
   });
 
-  const Login = async (values: { username: string; password: string }) => {
+  const Login = async (values: { email: string; password: string }) => {
     setLoading(true);
 
     try {
-      const response = await api.post("/auth/login", {
-        username: values.username,
+      const response = await api.post("/api/v1/auth/sign-in", {
+        email: values.email,
         password: values.password,
       });
 
       if (response.status === 200) {
         const { accessToken, roles } = response.data;
 
-        // Tokenni saqlash
         localStorage.setItem("token", accessToken);
         localStorage.setItem("isLoggedIn", "true");
 
         message.success("Muvaffaqiyatli kirish!");
 
-        if (roles.includes("ROLE_ADMIN")) {
+        if (roles.includes("ADMIN")) {
           navigate("/admin");
-        } else if (roles.includes("ROLE_USER")) {
+        } else if (roles.includes("USER")) {
           navigate("/");
         } else {
           message.error("Sizning rolingiz aniqlanmadi.");
@@ -88,7 +87,7 @@ export const LoginPage = () => {
         </Typography.Title>
         <Form onFinish={Login} layout="vertical">
           <Form.Item
-            name="username"
+            name="email"
             label="Login"
             rules={[{ required: true, message: "Loginni kiriting!" }]}
           >
