@@ -1,16 +1,25 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Menu, Button, Dropdown, Badge, Layout } from "antd";
 import { IoIosArrowDown, IoIosArrowUp } from "react-icons/io";
 import { FaBars, FaPhoneAlt, FaUser } from "react-icons/fa";
 import { AiOutlineShoppingCart, AiOutlineHeart } from "react-icons/ai";
 import { useTranslation } from "react-i18next";
 import i18n from "../../i18/i18";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const Header = ({ isDesktop }: { isDesktop: boolean }) => {
   const [isCatalogOpen, setIsCatalogOpen] = useState(false);
   const [isMenuOpen, setMenuOpen] = useState(false);
   const { t } = useTranslation();
+  const navigate = useNavigate();
+  const [userName, setUserName] = useState<string | null>(null);
+
+  useEffect(() => {
+    const storedName = localStorage.getItem("userName");
+    if (storedName) {
+      setUserName(storedName);
+    }
+  }, []);
 
   const toggleCatalog = () => {
     setIsCatalogOpen(!isCatalogOpen);
@@ -33,6 +42,15 @@ const Header = ({ isDesktop }: { isDesktop: boolean }) => {
       </Menu.Item>
     </Menu>
   );
+
+  const handleUserClick = () => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      navigate("/login");
+    } else {
+      navigate("/profile");
+    }
+  };
 
   const { Header: AntHeader } = Layout;
 
@@ -158,41 +176,6 @@ const Header = ({ isDesktop }: { isDesktop: boolean }) => {
                         <Menu.Item key="22" className="text-gray-700">
                           <Link to="/product">{t("catalogItem3")}</Link>
                         </Menu.Item>
-                        <Menu.Item key="23" className="text-gray-700">
-                          <Link to="/product">{t("catalogItem4")}</Link>
-                        </Menu.Item>
-                        <Menu.Item key="24" className="text-gray-700">
-                          <Link to="/product">{t("catalogItem5")}</Link>
-                        </Menu.Item>
-                        <Menu.Item key="25" className="text-gray-700">
-                          <Link to="/product">{t("catalogItem6")}</Link>
-                        </Menu.Item>
-                        <Menu.Item key="26" className="text-gray-700">
-                          <Link to="/product">{t("catalogItem7")}</Link>
-                        </Menu.Item>
-                        <Menu.Item key="27" className="text-gray-700">
-                          <Link to="/product">{t("catalogItem8")}</Link>
-                        </Menu.Item>
-                        <Menu.Item key="29">
-                          <Link
-                            to="/Katalog/Category"
-                            onClick={() => {
-                              setTimeout(() => {
-                                const categorySection =
-                                  document.getElementById("category-section");
-                                if (categorySection) {
-                                  categorySection.scrollIntoView({
-                                    behavior: "smooth",
-                                  });
-                                }
-                              }, 100);
-                            }}
-                          >
-                            <Button type="primary" className="w-full">
-                              {t("viewAll")}
-                            </Button>
-                          </Link>
-                        </Menu.Item>
                       </div>
 
                       <img
@@ -224,10 +207,13 @@ const Header = ({ isDesktop }: { isDesktop: boolean }) => {
               <Badge count={""} size="small" offset={[10, 0]}>
                 <AiOutlineShoppingCart className="text-2xl text-gray-600" />
               </Badge>
-              <Link to="/login" className="flex items-center text-gray-600">
+              <div
+                className="flex items-center cursor-pointer"
+                onClick={handleUserClick}
+              >
                 <FaUser className="text-2xl mr-1" />
-                <span>{t("login")}</span>
-              </Link>
+                {userName ? <span>{userName}</span> : <span>{t("login")}</span>}
+              </div>
             </div>
 
             <Dropdown overlay={menu} trigger={["click"]}>

@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { useQuery } from "@tanstack/react-query";
-import api from "./api";
+import api from "../api/api";
 import Header from "../components/Headers";
 import Footers from "@src/components/Headers/Footer";
 import { Category } from "../types";
@@ -10,7 +10,7 @@ import { Link } from "react-router-dom";
 
 const Categories = () => {
   const [isDesktop, setIsDesktop] = useState(window.innerWidth >= 774);
-  const [visibleCount, setVisibleCount] = useState(8); // Initial number of categories to show
+  const [visibleCount, setVisibleCount] = useState(8); 
   const { t } = useTranslation();
 
   const { data: categories = [], isLoading: categoriesLoading } = useQuery<
@@ -29,7 +29,7 @@ const Categories = () => {
     };
   }, []);
 
-  // Ensure categories is an array and handle loading state
+ 
   if (categoriesLoading) {
     return (
       <div
@@ -42,7 +42,7 @@ const Categories = () => {
   }
 
   const handleShowMore = () => {
-    setVisibleCount(categories.length); // Show all categories
+    setVisibleCount(categories.length); 
   };
 
   return (

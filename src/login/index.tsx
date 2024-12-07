@@ -69,6 +69,8 @@ export const LoginPage = () => {
       navigate("/login");
     } else {
       console.log("Token mavjud:", token);
+
+      navigate("/");
     }
   };
 

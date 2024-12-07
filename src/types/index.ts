@@ -51,3 +51,18 @@ export interface AuthResponse {
     roles: string[];
   };
 }
+export interface UpdateProfilePayload {
+  name: string;
+  email: string;
+}
+
+export interface UpdatePasswordPayload {
+  oldPassword: string;
+  newPassword: string;
+  confirmNewPassword: string;
+}
+
+export interface ResetPasswordPayload {
+  token: string;
+  newPassword: string;
+}

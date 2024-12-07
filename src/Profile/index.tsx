@@ -1,57 +1,28 @@
 /** @jsxImportSource @emotion/react */
-import { Layout, Typography, message, Spin } from "antd";
+import { useState } from "react";
+import { Layout, Form, Input, Button, Typography, Avatar, Upload } from "antd";
+import { MdPhotoCamera } from "react-icons/md"; // Foto yuklash ikona
+import { FaEdit, FaUser } from "react-icons/fa"; // Edit va User ikonalar
 import { css } from "@emotion/react";
-import { useEffect, useState } from "react";
-import axios from "axios";
-import { useNavigate } from "react-router-dom";
-import { User } from "@src/types";
-
-const api = axios.create({
-  baseURL: "http://54.168.41.60:8080",
-});
 
 const Profile = () => {
-  const [userData, setUserData] = useState<User | null>(null);
-  const [loading, setLoading] = useState(true);
-  const navigate = useNavigate();
+  const [form] = Form.useForm();
+  const [profilePhoto, setProfilePhoto] = useState<string | null>(null);
 
-  useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (!token) {
-      navigate("/login");
-      return;
-    }
+  const handlePhotoUpload = (info: any) => {
+    const reader = new FileReader();
+    reader.onload = () => {
+      if (reader.readyState === 2) {
+        setProfilePhoto(reader.result as string);
+      }
+    };
+    reader.readAsDataURL(info.file.originFileObj);
+  };
 
-    api
-      .get<User>("/user/home", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      })
-      .then((response) => {
-        setUserData(response.data);
-      })
-      .catch((error) => {
-        console.error("Foydalanuvchi ma'lumotlarini olishda xato:", error);
-        message.error(
-          "Foydalanuvchi ma'lumotlarini olishda xatolik yuz berdi!"
-        );
-      })
-      .finally(() => {
-        setLoading(false);
-      });
-  }, [navigate]);
-
-  if (loading) {
-    return (
-      <Layout
-        style={{ minHeight: "100vh" }}
-        className="flex items-center justify-center"
-      >
-        <Spin size="large" tip="Yuklanmoqda..." />
-      </Layout>
-    );
-  }
+  const onFinish = (values: any) => {
+    console.log("Form values:", values);
+    // API chaqiruvini shu yerda bajarishingiz mumkin
+  };
 
   return (
     <Layout
@@ -65,7 +36,7 @@ const Profile = () => {
     >
       <div
         css={css`
-          max-width: 600px;
+          max-width: 400px;
           width: 100%;
           padding: 20px;
           background: white;
@@ -74,52 +45,76 @@ const Profile = () => {
         `}
       >
         <Typography.Title
-          level={2}
+          level={3}
           css={css`
             text-align: center;
             margin-bottom: 20px;
           `}
         >
-          Foydalanuvchi Profili
+          Edit Profile
         </Typography.Title>
-        {userData ? (
-          <div>
-            <p>
-              <strong>Foydalanuvchi nomi:</strong> {userData.username}
-            </p>
-            <p>
-              <strong>Ismi:</strong> {userData.firstName}
-            </p>
-            <p>
-              <strong>Familiyasi:</strong> {userData.lastName}
-            </p>
-            <p>
-              <strong>Admin:</strong> {userData.isAdmin ? "Ha" : "Yo'q"}
-            </p>
-            <p>
-              <strong>Manzil:</strong>{" "}
-              {userData.address || "Ma'lumot mavjud emas"}
-            </p>
-            <p>
-              <strong>Rasm:</strong>
-              {userData.image ? (
-                <img
-                  src={userData.image.path}
-                  alt="Foydalanuvchi rasm"
-                  css={css`
-                    max-width: 200px;
-                    border-radius: 4px;
-                    margin-top: 10px;
-                  `}
-                />
-              ) : (
-                "Rasm mavjud emas"
-              )}
-            </p>
-          </div>
-        ) : (
-          <p>Foydalanuvchi ma'lumotlari mavjud emas.</p>
-        )}
+
+        <div
+          css={css`
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 20px;
+          `}
+        >
+          <Avatar
+            size={100}
+            icon={<FaUser />}
+            src={profilePhoto}
+            css={css`
+              margin-bottom: 10px;
+            `}
+          />
+          <Upload
+            showUploadList={false}
+            beforeUpload={() => false}
+            onChange={handlePhotoUpload}
+          >
+            <Button type="link" icon={<MdPhotoCamera />}>
+              Change profile photo
+            </Button>
+          </Upload>
+        </div>
+
+        <Form
+          form={form}
+          layout="vertical"
+          onFinish={onFinish}
+          initialValues={{
+            name: "Bill Smith",
+            username: "bill_smith83",
+            pronouns: "he/him",
+            bio: "I’m a freelance photographer!",
+            links: "",
+          }}
+        >
+          <Form.Item label="Name" name="name">
+            <Input placeholder="Enter your name" />
+          </Form.Item>
+          <Form.Item label="Username" name="username">
+            <Input placeholder="Enter your username" />
+          </Form.Item>
+          <Form.Item label="Pronouns" name="pronouns">
+            <Input placeholder="Enter your pronouns" />
+          </Form.Item>
+          <Form.Item label="Bio" name="bio">
+            <Input.TextArea rows={2} placeholder="Write your bio" />
+          </Form.Item>
+          <Form.Item label="Links" name="links">
+            <Input placeholder="Add links" />
+          </Form.Item>
+
+          <Form.Item>
+            <Button type="primary" htmlType="submit" block icon={<FaEdit />}>
+              Save Changes
+            </Button>
+          </Form.Item>
+        </Form>
       </div>
     </Layout>
   );

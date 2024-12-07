@@ -1,6 +1,6 @@
 import { Layout, Row, Col, Space } from "antd";
 import { FaVk, FaTwitter, FaFacebook } from "react-icons/fa";
-import { Link } from "react-router-dom"; // Import Link from react-router-dom
+import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 
 const { Footer } = Layout;
