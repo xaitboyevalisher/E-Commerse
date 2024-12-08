@@ -1,8 +1,9 @@
 /** @jsxImportSource @emotion/react */
-import { Layout, Form, Input, Button, Typography, message } from "antd";
+import { Layout, Form, Input, Button, Typography, message, Space } from "antd";
 import { useState, useEffect } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { Link } from "react-router-dom"; // Link komponentini import qilish
 
 export const LoginPage = () => {
   const [loading, setLoading] = useState(false);
@@ -15,7 +16,7 @@ export const LoginPage = () => {
     },
   });
 
-  const Login = async (values: { email: string; password: string }) => {
+  const handleLogin = async (values: { email: string; password: string }) => {
     setLoading(true);
 
     try {
@@ -25,58 +26,22 @@ export const LoginPage = () => {
       });
 
       if (response.status === 200) {
-        const { accessToken, roles } = response.data;
-
-        localStorage.setItem("token", accessToken);
-        localStorage.setItem("isLoggedIn", "true");
-
+        const { accessToken } = response.data;
+        sessionStorage.setItem("accessToken", accessToken); // Tokenni sessionStorage'ga saqlash
         message.success("Muvaffaqiyatli kirish!");
-
-        if (roles.includes("ADMIN")) {
-          navigate("/admin");
-        } else if (roles.includes("USER")) {
-          navigate("/");
-        } else {
-          message.error("Sizning rolingiz aniqlanmadi.");
-        }
-      } else {
-        message.error(
-          "Kirish muvaffaqiyatsiz. Iltimos, qaytadan urinib ko'ring."
-        );
+        navigate("/"); // Asosiy sahifaga o'tish
       }
     } catch (error) {
-      if (axios.isAxiosError(error) && error.response) {
-        if (error.response.status === 401) {
-          message.error("Tizimga kirish ro'yxatdan o'ting.");
-        } else {
-          message.error(
-            "Kirishda xatolik yuz berdi: " + error.response.data.message
-          );
-        }
-      } else {
-        console.error("Kirishda xato", error);
-        message.error("Kirishda xatolik yuz berdi!");
-      }
+      message.error("Login yoki parol xato!");
     } finally {
       setLoading(false);
     }
   };
 
-  const checkAuth = () => {
-    const token = localStorage.getItem("token");
-    if (!token) {
-      console.log("Token topilmadi, login sahifasiga yo'naltiryapmiz...");
-      navigate("/login");
-    } else {
-      console.log("Token mavjud:", token);
-
-      navigate("/");
-    }
-  };
-
   useEffect(() => {
-    checkAuth();
-  }, []);
+    const token = sessionStorage.getItem("accessToken");
+    if (token) navigate("/"); // Agar token mavjud bo'lsa, asosiy sahifaga o'tadi
+  }, [navigate]);
 
   return (
     <Layout
@@ -87,7 +52,7 @@ export const LoginPage = () => {
         <Typography.Title level={2} className="text-center mb-4">
           Tizimga Kirish
         </Typography.Title>
-        <Form onFinish={Login} layout="vertical">
+        <Form onFinish={handleLogin} layout="vertical">
           <Form.Item
             name="email"
             label="Login"
@@ -107,14 +72,17 @@ export const LoginPage = () => {
               Kirish
             </Button>
           </Form.Item>
-          <Form.Item>
-            <div style={{ textAlign: "center" }}>
-              <Typography.Text>
-                Hisobingiz yo'qmi? <Link to="/register">Ro'yxatdan o'tish</Link>
-              </Typography.Text>
-            </div>
-          </Form.Item>
         </Form>
+
+        {/* Hisobingiz yo'qmi? ro'yxatdan o'tish havolasi */}
+        <Space className="w-full justify-center">
+          <Typography.Text>
+            Hisobingiz yo'qmi?{" "}
+            <Link to="/register" className="text-blue-500">
+              Ro'yxatdan o'tish
+            </Link>
+          </Typography.Text>
+        </Space>
       </div>
     </Layout>
   );

@@ -1,34 +1,105 @@
 /** @jsxImportSource @emotion/react */
-import { useState } from "react";
-import { Layout, Form, Input, Button, Typography, Avatar, Upload } from "antd";
-import { MdPhotoCamera } from "react-icons/md"; // Foto yuklash ikona
-import { FaEdit, FaUser } from "react-icons/fa"; // Edit va User ikonalar
+import { useEffect, useState } from "react";
+import {
+  Layout,
+  Avatar,
+  Button,
+  Typography,
+  Upload,
+  Divider,
+  Input,
+  message,
+} from "antd";
+import { MdPhotoCamera } from "react-icons/md";
+import { FiLogOut } from "react-icons/fi";
 import { css } from "@emotion/react";
+import { useNavigate } from "react-router-dom";
+import api from "../api/api"; // API calls
 
 const Profile = () => {
-  const [form] = Form.useForm();
   const [profilePhoto, setProfilePhoto] = useState<string | null>(null);
+  const [name, setName] = useState<string>("");
+  const [isPasswordChangeVisible, setIsPasswordChangeVisible] = useState(false);
+  const [isNameEditable, setIsNameEditable] = useState(false);
+  const [oldPassword, setOldPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
 
-  const handlePhotoUpload = (info: any) => {
-    const reader = new FileReader();
-    reader.onload = () => {
-      if (reader.readyState === 2) {
-        setProfilePhoto(reader.result as string);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const userName = localStorage.getItem("userName");
+    if (userName) {
+      setName(userName);
+    }
+  }, []);
+
+  const PhotoUpload = async (info: any) => {
+    const file = info.file.originFileObj;
+
+    if (file) {
+      const formData = new FormData();
+      formData.append("photo", file);
+
+      try {
+        const response = await api.post(
+          "/api/v1/user/update-profile",
+          formData,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          }
+        );
+
+        if (response.status === 200) {
+          const updatedPhotoPath = response.data.photoPath;
+          setProfilePhoto(updatedPhotoPath);
+          message.success("Profile photo updated successfully!");
+        }
+      } catch (error) {
+        console.error("Error updating profile photo:", error);
+        message.error("An error occurred while updating the photo.");
       }
-    };
-    reader.readAsDataURL(info.file.originFileObj);
+    }
   };
 
-  const onFinish = (values: any) => {
-    console.log("Form values:", values);
-    // API chaqiruvini shu yerda bajarishingiz mumkin
+  const PhotoChange = (file: any) => {
+    return false;
+  };
+
+  const Logout = () => {
+    sessionStorage.removeItem("accessToken");
+    sessionStorage.removeItem("isLoggedIn");
+    navigate("/login");
+  };
+
+  const PasswordChange = () => {
+    if (newPassword === confirmPassword) {
+      console.log("Password changed successfully!");
+    } else {
+      console.log("Passwords do not match!");
+    }
+  };
+
+  const NameChange = () => {
+    setIsNameEditable(true);
+  };
+
+  const NameSave = () => {
+    setIsNameEditable(false);
+    console.log("Name updated to:", name);
+  };
+
+  const PasswordClick = () => {
+    setIsPasswordChangeVisible(!isPasswordChangeVisible);
   };
 
   return (
     <Layout
       css={css`
         min-height: 100vh;
-        background-color: #f0f2f5;
+        background: linear-gradient(120deg, #fdfbfb 0%, #ebedee 100%);
         display: flex;
         align-items: center;
         justify-content: center;
@@ -41,80 +112,175 @@ const Profile = () => {
           padding: 20px;
           background: white;
           border-radius: 8px;
+          text-align: center;
           box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
         `}
       >
-        <Typography.Title
-          level={3}
+        <Avatar
+          size={100}
+          src={profilePhoto}
           css={css`
-            text-align: center;
-            margin-bottom: 20px;
+            margin-bottom: 16px;
+            background-color: #f0f0f0;
+          `}
+        />
+        <Typography.Title
+          level={4}
+          css={css`
+            margin-bottom: 8px;
           `}
         >
-          Edit Profile
+          {name}
         </Typography.Title>
+
+        <Upload
+          showUploadList={false}
+          beforeUpload={PhotoChange}
+          onChange={PhotoUpload}
+          accept="image/*"
+        >
+          <Button type="link" icon={<MdPhotoCamera />}>
+            Change profile photo
+          </Button>
+        </Upload>
+
+        <Divider />
 
         <div
           css={css`
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            margin-bottom: 20px;
+            text-align: left;
+            font-size: 16px;
           `}
         >
-          <Avatar
-            size={100}
-            icon={<FaUser />}
-            src={profilePhoto}
+          <Typography.Title level={5}>Account Settings</Typography.Title>
+          <div
             css={css`
-              margin-bottom: 10px;
+              margin-bottom: 12px;
+              display: flex;
+              justify-content: space-between;
+              align-items: center;
+              cursor: pointer;
             `}
-          />
-          <Upload
-            showUploadList={false}
-            beforeUpload={() => false}
-            onChange={handlePhotoUpload}
+            onClick={NameChange}
           >
-            <Button type="link" icon={<MdPhotoCamera />}>
-              Change profile photo
-            </Button>
-          </Upload>
+            <span>Name</span>
+            <span>➔</span>
+          </div>
+          {isNameEditable && (
+            <div>
+              <Input
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                autoFocus
+                css={css`
+                  margin-top: 8px;
+                `}
+              />
+              <Button
+                type="primary"
+                onClick={NameSave}
+                css={css`
+                  margin-top: 8px;
+                `}
+              >
+                Save
+              </Button>
+            </div>
+          )}
         </div>
 
-        <Form
-          form={form}
-          layout="vertical"
-          onFinish={onFinish}
-          initialValues={{
-            name: "Bill Smith",
-            username: "bill_smith83",
-            pronouns: "he/him",
-            bio: "I’m a freelance photographer!",
-            links: "",
-          }}
-        >
-          <Form.Item label="Name" name="name">
-            <Input placeholder="Enter your name" />
-          </Form.Item>
-          <Form.Item label="Username" name="username">
-            <Input placeholder="Enter your username" />
-          </Form.Item>
-          <Form.Item label="Pronouns" name="pronouns">
-            <Input placeholder="Enter your pronouns" />
-          </Form.Item>
-          <Form.Item label="Bio" name="bio">
-            <Input.TextArea rows={2} placeholder="Write your bio" />
-          </Form.Item>
-          <Form.Item label="Links" name="links">
-            <Input placeholder="Add links" />
-          </Form.Item>
+        <Divider />
 
-          <Form.Item>
-            <Button type="primary" htmlType="submit" block icon={<FaEdit />}>
-              Save Changes
+        <div
+          css={css`
+            text-align: left;
+            font-size: 16px;
+          `}
+        >
+          <Typography.Title
+            level={5}
+            css={css`
+              margin-bottom: 16px;
+            `}
+          >
+            Password Settings
+          </Typography.Title>
+          <div
+            css={css`
+              margin-bottom: 12px;
+              display: flex;
+              justify-content: space-between;
+              align-items: center;
+              cursor: pointer;
+            `}
+            onClick={PasswordClick}
+          >
+            <span>Change Password</span>
+            <span
+              css={css`
+                cursor: pointer;
+                color: ${isPasswordChangeVisible ? "#1890ff" : "#000"};
+              `}
+            >
+              ➔
+            </span>
+          </div>
+
+          {isPasswordChangeVisible && (
+            <div
+              css={css`
+                display: flex;
+                flex-direction: column;
+                gap: 12px;
+              `}
+            >
+              <Input.Password
+                placeholder="Old Password"
+                value={oldPassword}
+                onChange={(e) => setOldPassword(e.target.value)}
+              />
+              <Input.Password
+                placeholder="New Password"
+                value={newPassword}
+                onChange={(e) => setNewPassword(e.target.value)}
+              />
+              <Input.Password
+                placeholder="Confirm Password"
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+              />
+              <Button
+                type="primary"
+                onClick={PasswordChange}
+                css={css`
+                  margin-top: 12px;
+                `}
+              >
+                Change Password
+              </Button>
+            </div>
+          )}
+
+          <div
+            css={css`
+              display: flex;
+              justify-content: space-between;
+              align-items: center;
+              margin-top: 16px;
+            `}
+          >
+            <Button
+              type="text"
+              icon={<FiLogOut size={18} />}
+              onClick={Logout}
+              css={css`
+                color: red;
+              `}
+            >
+              Logout
             </Button>
-          </Form.Item>
-        </Form>
+          </div>
+        </div>
       </div>
     </Layout>
   );
