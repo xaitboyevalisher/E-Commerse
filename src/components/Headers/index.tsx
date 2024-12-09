@@ -176,6 +176,41 @@ const Header = ({ isDesktop }: { isDesktop: boolean }) => {
                         <Menu.Item key="22" className="text-gray-700">
                           <Link to="/product">{t("catalogItem3")}</Link>
                         </Menu.Item>
+                        <Menu.Item key="23" className="text-gray-700">
+                          <Link to="/product">{t("catalogItem4")}</Link>
+                        </Menu.Item>
+                        <Menu.Item key="24" className="text-gray-700">
+                          <Link to="/product">{t("catalogItem5")}</Link>
+                        </Menu.Item>
+                        <Menu.Item key="25" className="text-gray-700">
+                          <Link to="/product">{t("catalogItem6")}</Link>
+                        </Menu.Item>
+                        <Menu.Item key="26" className="text-gray-700">
+                          <Link to="/product">{t("catalogItem7")}</Link>
+                        </Menu.Item>
+                        <Menu.Item key="27" className="text-gray-700">
+                          <Link to="/product">{t("catalogItem8")}</Link>
+                        </Menu.Item>
+                        <Menu.Item
+                          key="28"
+                          className="text-white bg-blue-500 px-4 py-2 rounded-md flex text-center"
+                          style={{
+                            backgroundColor: "#1D4ED8",
+                            cursor: "pointer",
+                          }}
+                        >
+                          <Link
+                            to="/Katalog/Category"
+                            style={{
+                              color: "white",
+                              textDecoration: "none",
+                              textAlign: "center",
+                              width: "100%",
+                            }}
+                          >
+                            Смотреть все
+                          </Link>
+                        </Menu.Item>
                       </div>
 
                       <img

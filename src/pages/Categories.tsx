@@ -10,7 +10,7 @@ import { Link } from "react-router-dom";
 
 const Categories = () => {
   const [isDesktop, setIsDesktop] = useState(window.innerWidth >= 774);
-  const [visibleCount, setVisibleCount] = useState(8); 
+  const [visibleCount, setVisibleCount] = useState(8);
   const { t } = useTranslation();
 
   const { data: categories = [], isLoading: categoriesLoading } = useQuery<
@@ -29,7 +29,6 @@ const Categories = () => {
     };
   }, []);
 
- 
   if (categoriesLoading) {
     return (
       <div
@@ -42,7 +41,7 @@ const Categories = () => {
   }
 
   const handleShowMore = () => {
-    setVisibleCount(categories.length); 
+    setVisibleCount(categories.length);
   };
 
   return (

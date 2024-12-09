@@ -1,4 +1,9 @@
-import { BrowserRouter as Router, Route, Routes, Navigate } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Route,
+  Routes,
+  Navigate,
+} from "react-router-dom";
 import Home from "./pages/Home";
 import Product from "./pages/Product";
 import Wholesale from "./pages/Wholesale";
@@ -8,6 +13,7 @@ import Categories from "./pages/Categories";
 import LoginPage from "./login";
 import Register from "./Register";
 import Profile from "./Profile";
+import Payment from "./pages/Payment";
 
 const queryClient = new QueryClient();
 
@@ -28,6 +34,7 @@ const App = () => {
           <Route path="/aboutus" element={<AboutUs />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<Register />} />
+          <Route path="/payment" element={<Payment />} />
           <Route
             path="/profile"
             element={
