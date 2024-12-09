@@ -13,11 +13,14 @@ import {
   Layout,
   Carousel,
   Image,
+  message,
 } from "antd";
 import Header from "../components/Headers";
 import Footers from "@src/components/Headers/Footer";
 import { BiChevronLeft, BiChevronRight } from "react-icons/bi";
 import { useTranslation } from "react-i18next";
+import api from "../api/api";
+import { ApplicationData } from "../types";
 
 const { Title, Paragraph } = Typography;
 
@@ -157,13 +160,59 @@ const workSectionStyle = css`
 const InputContainer = styled.div`
   display: flex;
   justify-content: center;
-  gap: 0.5rem;
+  gap: 1rem; // Increased gap between inputs and button
   margin-top: 1rem;
-  flex-wrap: wrap;
+  flex-wrap: nowrap; // Ensures the button stays on the same line as the inputs
+  align-items: center; // Vertically align the button and inputs
 `;
 const Wholesale = () => {
-  const handleSubmit = (values: any) => {
-    console.log("Form values:", values);
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const handleSubmit = async (values: any) => {
+    const requestData: ApplicationData = {
+      name: values.name,
+      company: values.company,
+      phone: values.phone,
+      lockId: 1,
+      lockAmount: parseInt(values.quantity, 10) || 1,
+      customLogo: values.services?.includes("logo") || false,
+      helpSetup: values.services?.includes("help") || false,
+    };
+
+    try {
+      await api.post("/application/add", requestData, {
+        headers: { "Accept-Language": "ru" },
+      });
+      message.success("Заявка успешно отправлена!");
+    } catch (error) {
+      console.error(error);
+      message.error("Ошибка при отправке заявки!");
+    }
+  };
+
+  const Submit = async () => {
+    const contactData = { name, email };
+
+    try {
+      await api.post("/contact/add", contactData);
+
+      localStorage.setItem(
+        "contactSuccessMessage",
+        "Kontaktingiz muvaffaqiyatli qabul qilindi, tez orada siz bilan bog'lanamiz!"
+      );
+
+      message.success(
+        localStorage.getItem("contactSuccessMessage") ||
+          "Muvaffaqiyatli yuborildi!"
+      );
+
+      setName("");
+      setEmail("");
+    } catch (error) {
+      console.error("Xatolik yuz berdi:", error);
+
+      message.error("Xatolik yuz berdi, qayta urinib ko'ring.");
+    }
   };
 
   const { t } = useTranslation();
@@ -482,16 +531,25 @@ const Wholesale = () => {
           <p className="max-w-[390px] mx-auto mt-2">
             {t("callbacksDescription")}
           </p>
+
           <InputContainer>
             <Input
               placeholder={t("yourName")}
-              className="w-full sm:w-[200px] mx-auto mb-4"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              className="w-full sm:w-[200px] mb-4"
             />
             <Input
               placeholder={t("yourEmail")}
-              className="w-full sm:w-[200px] mx-auto mb-4"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="w-full sm:w-[200px] mb-4"
             />
-            <Button type="primary" className="w-full sm:w-auto">
+            <Button
+              type="primary"
+              className="w-full sm:w-auto mb-4"
+              onClick={Submit}
+            >
               {t("submit")}
             </Button>
           </InputContainer>

@@ -66,3 +66,20 @@ export interface ResetPasswordPayload {
   token: string;
   newPassword: string;
 }
+
+// types.ts
+export interface ApplicationData {
+  name: string;
+  company: string;
+  phone: string;
+  lockId: number;
+  lockAmount: number;
+  customLogo: boolean;
+  helpSetup: boolean;
+}
+
+export interface ApplicationResponse {
+  success: boolean;
+  message: string;
+  data?: any; // Or add specific response structure if known
+}

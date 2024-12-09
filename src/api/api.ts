@@ -3,6 +3,8 @@ import {
   ContactRequest,
   ContactResponse,
   UpdateProfilePayload,
+  ApplicationData,
+  ApplicationResponse,
 } from "../types";
 
 const baseUrl = "http://8.210.211.217:8080/api/v1";
@@ -93,6 +95,26 @@ export const updateProfile = async (
   } catch (error) {
     if (axios.isAxiosError(error)) {
       console.error("Profilni yangilashda xatolik:", error.response?.data);
+    } else {
+      console.error("Tizimda xatolik yuz berdi:", error);
+    }
+    throw error;
+  }
+};
+
+export const submitApplication = async (
+  application: ApplicationData
+): Promise<ApplicationResponse> => {
+  try {
+    const response = await api.post<ApplicationResponse>(
+      "/application/add",
+      application
+    );
+    console.log("Ariza yuborildi:", response.data);
+    return response.data;
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      console.error("Ariza yuborishda xatolik:", error.response?.data);
     } else {
       console.error("Tizimda xatolik yuz berdi:", error);
     }

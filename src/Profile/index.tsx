@@ -64,10 +64,6 @@ const Profile = () => {
     }
   };
 
-  const PhotoChange = (file: any) => {
-    return false;
-  };
-
   const Logout = () => {
     sessionStorage.removeItem("accessToken");
     sessionStorage.removeItem("isLoggedIn");
@@ -133,12 +129,7 @@ const Profile = () => {
           {name}
         </Typography.Title>
 
-        <Upload
-          showUploadList={false}
-          beforeUpload={PhotoChange}
-          onChange={PhotoUpload}
-          accept="image/*"
-        >
+        <Upload showUploadList={false} onChange={PhotoUpload} accept="image/*">
           <Button type="link" icon={<MdPhotoCamera />}>
             Change profile photo
           </Button>
