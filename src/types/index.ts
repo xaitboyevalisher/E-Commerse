@@ -5,8 +5,10 @@ export interface Service {
 
 export interface Category {
   id: number;
-  image: string;
-  title: string;
+  nameUz: string;
+  nameEn: string;
+  nameRu: string;
+  photoPath: string;
 }
 
 export interface Product {

@@ -1,31 +1,39 @@
 import { useState, useEffect } from "react";
-import { useTranslation } from "react-i18next";
 import { useQuery } from "@tanstack/react-query";
 import api from "../api/api";
 import Header from "../components/Headers";
-import Footers from "@src/components/Headers/Footer";
-import { Category } from "../types";
-import { Card, Col, Layout, Row, Spin, Button } from "antd";
-import { Link } from "react-router-dom";
+import Footers from "../components/Headers/Footer";
+import { Card, Col, Layout, Row, Spin, Button, Select } from "antd";
+
+interface Category {
+  id: number;
+  name: string;
+  photoPath: string;
+  createdAt: string;
+  updatedAt: string;
+}
 
 const Categories = () => {
   const [isDesktop, setIsDesktop] = useState(window.innerWidth >= 774);
   const [visibleCount, setVisibleCount] = useState(8);
-  const { t } = useTranslation();
+  const [language, setLanguage] = useState("en"); // Default language: English
 
   const { data: categories = [], isLoading: categoriesLoading } = useQuery<
     Category[]
-  >(["categories"], async () => {
-    const response = await api.get("category");
-    return response.data;
+  >(["categories", language], async () => {
+    const response = await api.get("/category/get-all", {
+      params: { page: 0, size: 10 },
+      headers: { "Accept-Language": language }, // Adding language header
+    });
+    return response.data.data; // Main data from API
   });
 
   useEffect(() => {
-    const Resize = () => setIsDesktop(window.innerWidth >= 774);
-    window.addEventListener("resize", Resize);
+    const handleResize = () => setIsDesktop(window.innerWidth >= 774);
+    window.addEventListener("resize", handleResize);
 
     return () => {
-      window.removeEventListener("resize", Resize);
+      window.removeEventListener("resize", handleResize);
     };
   }, []);
 
@@ -44,14 +52,26 @@ const Categories = () => {
     setVisibleCount(categories.length);
   };
 
+  const handleLanguageChange = (value: string) => {
+    setLanguage(value);
+  };
+
   return (
     <Layout>
       <Header isDesktop={isDesktop} />
       <div className="combined-container">
         <div className="categories py-12 flex flex-col items-center">
-          <h2 className="text-center text-2xl font-bold mb-8">
-            {t("categories")}
-          </h2>
+          <h2 className="text-center text-2xl font-bold mb-8">Categories</h2>
+
+          <Select
+            defaultValue="en"
+            style={{ width: 120, marginBottom: 20 }}
+            onChange={handleLanguageChange}
+          >
+            <Select.Option value="en">English</Select.Option>
+            <Select.Option value="uz">Uzbek</Select.Option>
+            <Select.Option value="ru">Russian</Select.Option>
+          </Select>
           <Row
             gutter={[32, 32]}
             justify="center"
@@ -82,8 +102,8 @@ const Categories = () => {
                     }}
                   >
                     <img
-                      src={category.image}
-                      alt={t(`categoriesList.${category.title}`)}
+                      src={`http://${category.photoPath}`}
+                      alt={category.name}
                       style={{
                         width: "100%",
                         height: "80%",
@@ -97,12 +117,7 @@ const Categories = () => {
                         marginTop: "8px",
                       }}
                     >
-                      <Link
-                        to={`/product/${category.title}`}
-                        style={{ color: "inherit" }}
-                      >
-                        {t(`categoriesList.${category.title}`)}
-                      </Link>
+                      {category.name}
                     </div>
                   </Card>
                 </Col>
@@ -118,7 +133,7 @@ const Categories = () => {
                 fontSize: "16px",
               }}
             >
-              {t("allCategories")}
+              Show All Categories
             </Button>
           )}
         </div>
