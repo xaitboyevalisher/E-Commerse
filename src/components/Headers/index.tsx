@@ -10,7 +10,7 @@ import { Link, useNavigate } from "react-router-dom";
 const Header = ({ isDesktop }: { isDesktop: boolean }) => {
   const [isCatalogOpen, setIsCatalogOpen] = useState(false);
   const [isMenuOpen, setMenuOpen] = useState(false);
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const navigate = useNavigate();
   const [userName, setUserName] = useState<string | null>(null);
 

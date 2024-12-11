@@ -1,5 +1,9 @@
-import { useEffect, useState } from "react";
-import axios from "axios";
+import React, { useState, useEffect } from "react";
+import { useParams } from "react-router-dom";
+import { useTranslation } from "react-i18next";
+import styled from "@emotion/styled";
+import api from "../api/api";
+import { useQuery } from "@tanstack/react-query";
 import {
   Layout,
   Slider,
@@ -13,14 +17,11 @@ import {
   Col,
   Input,
 } from "antd";
-import Header from "../components/Headers";
-import Footers from "@src/components/Headers/Footer";
 import { IoIosArrowDown } from "react-icons/io";
 import { AiOutlineStar } from "react-icons/ai";
-import { FaTimesCircle, FaCheckCircle, FaGift } from "react-icons/fa";
-import { useTranslation } from "react-i18next";
-import styled from "@emotion/styled";
-import { useParams } from "react-router-dom";
+import { FaCheckCircle, FaGift } from "react-icons/fa";
+import Header from "../components/Headers";
+import Footers from "@src/components/Headers/Footer";
 
 const { Option } = Select;
 const { Content } = Layout;
@@ -33,24 +34,32 @@ const InputContainer = styled.div`
   flex-wrap: wrap;
 `;
 
-type Product = {
+interface Product {
   id: number;
-  title: string;
-  price: string;
-  originalPrice?: string;
-  isOnSale: boolean;
-  availability: "in-stock" | "out-of-stock";
-  rating: number;
-  reviews: number;
-  image: string;
+  name: string;
+  description: string;
+  price: number;
+  newPrice: number;
+  categoryId: number;
   hasGift: boolean;
+  photos: string[];
+}
+
+const useProducts = (language: string) => {
+  return useQuery<Product[]>({
+    queryKey: ["products", language],
+    queryFn: async () => {
+      const response = await api.get(`/lock/get-all-by-filter`, {
+        params: { page: 0, size: 10 },
+        headers: { "Accept-Language": language },
+      });
+      return response.data.data;
+    },
+  });
+  1;
 };
 
-const api = axios.create({
-  baseURL: "https://383c2df7fe44c7e6.mokky.dev/",
-});
-
-const ProductPage = () => {
+const ProductPage: React.FC = () => {
   const { categoryTitle } = useParams<{ categoryTitle: string }>();
   const [isPriceVisible, setIsPriceVisible] = useState(true);
   const [isColorVisible, setIsColorVisible] = useState(false);
@@ -59,8 +68,11 @@ const ProductPage = () => {
   const [isOpen, setIsOpen] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
   const [isDesktop, setIsDesktop] = useState(window.innerWidth >= 774);
-  const [products, setProducts] = useState<Product[]>([]);
   const { t } = useTranslation();
+
+  const language = "en"; // Or get this from your language context/state
+  const { data: products = [], isLoading: productsLoading } =
+    useProducts(language);
 
   const PageChange = (page: number) => {
     setCurrentPage(page);
@@ -74,23 +86,14 @@ const ProductPage = () => {
     };
   }, []);
 
-  useEffect(() => {
-    const Products = async () => {
-      try {
-        const productResponse = await api.get("product");
-        setProducts(productResponse.data);
-      } catch (error) {
-        console.error("Error loading data:", error);
-      }
-    };
-
-    Products();
-  }, []);
-
   const paginatedProducts = products.slice(
     (currentPage - 1) * 12,
     currentPage * 12
   );
+
+  if (productsLoading) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <Layout className="min-h-screen bg-gray-100">
@@ -273,13 +276,13 @@ const ProductPage = () => {
                     className="rounded-md shadow-md hover:shadow-lg transition-shadow relative overflow-hidden"
                     cover={
                       <img
-                        alt={product.title}
-                        src={product.image}
+                        alt={product.name}
+                        src={product.photos[0] || "/placeholder.jpg"}
                         className="h-48 w-full object-cover"
                       />
                     }
                   >
-                    {product.isOnSale && (
+                    {product.newPrice < product.price && (
                       <div className="absolute top-2 right-2 z-10">
                         <span className="bg-white-500 text-black text-white px-2 py-1 text-xs font-bold rounded">
                           SALE
@@ -288,15 +291,9 @@ const ProductPage = () => {
                     )}
 
                     <div className="absolute top-2 left-2 z-10">
-                      {product.availability === "in-stock" ? (
-                        <span className="flex items-center gap-1 text-green-500">
-                          <FaCheckCircle /> В наличии
-                        </span>
-                      ) : (
-                        <span className="flex items-center gap-1 text-red-500">
-                          <FaTimesCircle /> Нет в наличии
-                        </span>
-                      )}
+                      <span className="flex items-center gap-1 text-green-500">
+                        <FaCheckCircle /> В наличии
+                      </span>
 
                       {product.hasGift && (
                         <span className="flex items-center gap-1 text-yellow-500 mt-2">
@@ -306,29 +303,25 @@ const ProductPage = () => {
                     </div>
 
                     <div className="p-3">
-                      <h3 className="font-semibold text-lg">{product.title}</h3>
+                      <h3 className="font-semibold text-lg">{product.name}</h3>
                       <div className="flex items-center mt-2">
                         {[...Array(5)].map((_, index) => (
                           <AiOutlineStar
                             key={index}
-                            className={
-                              index < Math.round(product.rating)
-                                ? "text-yellow-500"
-                                : "text-gray-300"
-                            }
+                            className="text-gray-300"
                           />
                         ))}
                         <span className="text-gray-500 text-sm ml-2">
-                          ({product.reviews} отзывов)
+                          (0 отзывов)
                         </span>
                       </div>
                       <div className="flex items-center mt-2 gap-3">
                         <span className="text-lg font-bold text-black flex items-center gap-1">
-                          {product.price}
+                          ${product.price}
                         </span>
-                        {product.originalPrice && (
+                        {product.newPrice < product.price && (
                           <span className="line-through text-gray-500 mr-2">
-                            {product.originalPrice}
+                            ${product.newPrice}
                           </span>
                         )}
                       </div>
@@ -362,22 +355,16 @@ const ProductPage = () => {
                     className="rounded-md shadow-md hover:shadow-lg transition-shadow relative"
                     cover={
                       <img
-                        alt={product.title}
-                        src={product.image}
+                        alt={product.name}
+                        src={product.photos[0] || "/placeholder.jpg"}
                         className="h-48 w-full object-cover"
                       />
                     }
                   >
                     <div className="absolute top-2 left-2 z-10">
-                      {product.availability === "in-stock" ? (
-                        <span className="flex items-center gap-1 text-green-500">
-                          <FaCheckCircle /> В наличии
-                        </span>
-                      ) : (
-                        <span className="flex items-center gap-1 text-red-500">
-                          <FaTimesCircle /> Нет в наличии
-                        </span>
-                      )}
+                      <span className="flex items-center gap-1 text-green-500">
+                        <FaCheckCircle /> В наличии
+                      </span>
                       {product.hasGift && (
                         <span className="flex items-center gap-1 text-yellow-500 mt-2">
                           <FaGift /> Подарок
@@ -385,7 +372,7 @@ const ProductPage = () => {
                       )}
                     </div>
 
-                    {product.isOnSale && (
+                    {product.newPrice < product.price && (
                       <div className="absolute top-2 right-2 z-10">
                         <span className="bg-white-500 text-black text-white px-2 py-1 text-xs font-bold rounded">
                           SALE
@@ -394,29 +381,25 @@ const ProductPage = () => {
                     )}
 
                     <div className="p-3">
-                      <h3 className="font-semibold text-lg">{product.title}</h3>
+                      <h3 className="font-semibold text-lg">{product.name}</h3>
                       <div className="flex items-center mt-2">
                         {[...Array(5)].map((_, index) => (
                           <AiOutlineStar
                             key={index}
-                            className={
-                              index < Math.round(product.rating)
-                                ? "text-yellow-500"
-                                : "text-gray-300"
-                            }
+                            className="text-gray-300"
                           />
                         ))}
                         <span className="text-gray-500 text-sm ml-2">
-                          ({product.reviews} отзывов)
+                          (0 отзывов)
                         </span>
                       </div>
                       <div className="flex items-center mt-2 gap-3">
                         <span className="text-lg font-bold text-black flex items-center gap-1">
-                          {product.price}
+                          ${product.price}
                         </span>
-                        {product.originalPrice && (
+                        {product.newPrice < product.price && (
                           <span className="line-through text-gray-500 mr-2">
-                            {product.originalPrice}
+                            ${product.newPrice}
                           </span>
                         )}
                       </div>
@@ -429,6 +412,7 @@ const ProductPage = () => {
               ))}
             </Row>
           </div>
+
           <div className="mt-8">
             <div className="space-y-8">
               <Row gutter={[16, 16]}>
@@ -470,8 +454,8 @@ const ProductPage = () => {
                 </Col>
                 <Col xs={24} md={12}>
                   <img
-                    alt={products[0]?.title}
-                    src={products[0]?.image}
+                    alt={products[0]?.name}
+                    src={products[0]?.photos[0] || "/placeholder.jpg"}
                     className="w-full h-64 object-cover rounded-md shadow-md"
                   />
                 </Col>
@@ -480,8 +464,8 @@ const ProductPage = () => {
               <Row gutter={[16, 16]}>
                 <Col xs={24} md={12}>
                   <img
-                    alt={products[1]?.title}
-                    src={products[1]?.image}
+                    alt={products[1]?.name}
+                    src={products[1]?.photos[0] || "/placeholder.jpg"}
                     className="w-full h-64 object-cover rounded-md shadow-md"
                   />
                 </Col>

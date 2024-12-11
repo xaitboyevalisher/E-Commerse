@@ -3,7 +3,7 @@ import { Layout, Form, Input, Button, Typography, message, Space } from "antd";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import { Link } from "react-router-dom"; // Link komponentini import qilish
+import { Link } from "react-router-dom";
 
 export const LoginPage = () => {
   const [loading, setLoading] = useState(false);
@@ -27,9 +27,9 @@ export const LoginPage = () => {
 
       if (response.status === 200) {
         const { accessToken } = response.data;
-        sessionStorage.setItem("accessToken", accessToken); // Tokenni sessionStorage'ga saqlash
+        sessionStorage.setItem("accessToken", accessToken);
         message.success("Muvaffaqiyatli kirish!");
-        navigate("/"); // Asosiy sahifaga o'tish
+        navigate("/");
       }
     } catch (error) {
       message.error("Login yoki parol xato!");
@@ -40,7 +40,7 @@ export const LoginPage = () => {
 
   useEffect(() => {
     const token = sessionStorage.getItem("accessToken");
-    if (token) navigate("/"); // Agar token mavjud bo'lsa, asosiy sahifaga o'tadi
+    if (token) navigate("/");
   }, [navigate]);
 
   return (
@@ -55,7 +55,7 @@ export const LoginPage = () => {
         <Form onFinish={handleLogin} layout="vertical">
           <Form.Item
             name="email"
-            label="Login"
+            label="Email"
             rules={[{ required: true, message: "Loginni kiriting!" }]}
           >
             <Input />
@@ -74,7 +74,6 @@ export const LoginPage = () => {
           </Form.Item>
         </Form>
 
-        {/* Hisobingiz yo'qmi? ro'yxatdan o'tish havolasi */}
         <Space className="w-full justify-center">
           <Typography.Text>
             Hisobingiz yo'qmi?{" "}

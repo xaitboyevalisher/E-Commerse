@@ -4,6 +4,7 @@ import api from "../api/api";
 import Header from "../components/Headers";
 import Footers from "../components/Headers/Footer";
 import { Card, Col, Layout, Row, Spin, Button, Select } from "antd";
+import { useTranslation } from "react-i18next";
 
 interface Category {
   id: number;
@@ -16,17 +17,20 @@ interface Category {
 const Categories = () => {
   const [isDesktop, setIsDesktop] = useState(window.innerWidth >= 774);
   const [visibleCount, setVisibleCount] = useState(8);
-  const [language, setLanguage] = useState("en"); // Default language: English
+  const [language, setLanguage] = useState("en");
+  const { t, i18n } = useTranslation();
 
   const { data: categories = [], isLoading: categoriesLoading } = useQuery<
     Category[]
   >(["categories", language], async () => {
     const response = await api.get("/category/get-all", {
       params: { page: 0, size: 10 },
-      headers: { "Accept-Language": language }, // Adding language header
+      headers: { "Accept-Language": language },
     });
-    return response.data.data; // Main data from API
+    return response.data.data;
   });
+
+  console.log(i18n.language);
 
   useEffect(() => {
     const handleResize = () => setIsDesktop(window.innerWidth >= 774);

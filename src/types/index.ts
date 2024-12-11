@@ -5,22 +5,13 @@ export interface Service {
 
 export interface Category {
   id: number;
-  nameUz: string;
-  nameEn: string;
-  nameRu: string;
+  name: string;
   photoPath: string;
+  createdAt: string;
+  updatedAt: string;
 }
 
-export interface Product {
-  id: number;
-  title: string;
-  image: string;
-  price: string;
-  originalPrice: string;
-  available: boolean;
-  onSale: boolean;
-  hasGift: boolean;
-}
+
 
 export interface ProductCardProps {
   product: Product;
@@ -85,3 +76,24 @@ export interface ApplicationResponse {
   message: string;
   data?: any; // Or add specific response structure if known
 }
+
+export interface Product {
+  id: number;
+  name: string;
+  description: string;
+  price: number;
+  newPrice: number;
+  categoryId: number;
+  hasGift: boolean;
+  photos: string[];
+  lockType: string;
+  deleted: boolean;
+  createdAt: string;
+  updatedAt: string;
+};
+
+export interface ApiResponse<T>  {
+  success: boolean;
+  message: string;
+  data: T;
+};

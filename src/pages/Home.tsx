@@ -28,13 +28,19 @@ const Home = () => {
   const [email, setEmail] = useState("");
   const [isDesktop, setIsDesktop] = useState(window.innerWidth >= 774);
   const { t } = useTranslation();
-  const { data: categories } = useQuery<Category[]>(
-    ["categories"],
+  const [visibleCount, setVisibleCount] = useState(8);
+  const [language, setLanguage] = useState("en");
+  const { data: categories = [], isLoading: categoriesLoading } = useQuery(
+    ["categories", language],
     async () => {
-      const response = await api.get("category?page=1&limit=4");
-      return response.data;
+      const response = await api.get("/category/get-all", {
+        params: { page: 0, size: 10 },
+        headers: { "Accept-Language": language },
+      });
+      return response.data.data;
     }
   );
+  console.log(categories, "salommsamsdmdasj");
 
   const { data: services = [] } = useQuery<Service[]>(
     ["services"],
@@ -51,7 +57,7 @@ const Home = () => {
       return response.data;
     }
   );
-
+  console.log(popularProducts, "popup");
   const carouselRef = useRef<any>(null);
   const [currentSlide, setCurrentSlide] = useState(0);
 
@@ -256,7 +262,7 @@ const Home = () => {
             justify="center"
             className="w-full max-w-screen-lg"
           >
-            {categories?.items?.map((category) => (
+            {categories?.map((category: unknown) => (
               <Col
                 xs={24}
                 sm={12}
