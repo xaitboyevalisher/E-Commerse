@@ -17,7 +17,6 @@ import Payment from "./pages/Payment";
 
 const queryClient = new QueryClient();
 
-// PrivateRoute komponenti: Login holatini tekshirish
 const PrivateRoute = ({ children }: { children: JSX.Element }) => {
   const isAuthenticated = !!sessionStorage.getItem("accessToken"); // Token mavjudligini tekshirish
   return isAuthenticated ? children : <Navigate to="/login" replace />;

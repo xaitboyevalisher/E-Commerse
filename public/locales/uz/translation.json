@@ -48,12 +48,6 @@
   "country": "Rossiya,",
   "cityStreet": "Rostov-na-Donu ul.",
   "streetAddress": "Bogacheva, 16",
-  "categoriesList": {
-    "hotels": "O'tellar uchun",
-    "lockers": "Shkaflar uchun",
-    "offices": "Ofislar uchun",
-    "homes": "Uylar uchun"
-  },
   "catalogItem1": "Yuzaga o'rnatiladigan elektron zamoklar",
   "catalogItem2": "Chuqurlashgan elektron zamoklar",
   "catalogItem3": "Kvartira zamoklari",

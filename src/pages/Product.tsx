@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import styled from "@emotion/styled";
@@ -16,6 +16,7 @@ import {
   Row,
   Col,
   Input,
+  message,
 } from "antd";
 import { IoIosArrowDown } from "react-icons/io";
 import { AiOutlineStar } from "react-icons/ai";
@@ -56,21 +57,22 @@ const useProducts = (language: string) => {
       return response.data.data;
     },
   });
-  1;
 };
 
-const ProductPage: React.FC = () => {
+const ProductPage = () => {
   const { categoryTitle } = useParams<{ categoryTitle: string }>();
   const [isPriceVisible, setIsPriceVisible] = useState(true);
   const [isColorVisible, setIsColorVisible] = useState(false);
   const [isMaterialVisible, setIsMaterialVisible] = useState(false);
   const [isSizeVisible, setIsSizeVisible] = useState(false);
   const [isOpen, setIsOpen] = useState(true);
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [isDesktop, setIsDesktop] = useState(window.innerWidth >= 774);
   const { t } = useTranslation();
 
-  const language = "en"; // Or get this from your language context/state
+  const language = "en";
   const { data: products = [], isLoading: productsLoading } =
     useProducts(language);
 
@@ -94,6 +96,31 @@ const ProductPage: React.FC = () => {
   if (productsLoading) {
     return <div>Loading...</div>;
   }
+
+  const Submit = async () => {
+    const contactData = { name, email };
+
+    try {
+      await api.post("/contact/add", contactData);
+
+      localStorage.setItem(
+        "contactSuccessMessage",
+        "Kontaktingiz muvaffaqiyatli qabul qilindi, tez orada siz bilan bog'lanamiz!"
+      );
+
+      message.success(
+        localStorage.getItem("contactSuccessMessage") ||
+          "Muvaffaqiyatli yuborildi!"
+      );
+
+      setName("");
+      setEmail("");
+    } catch (error) {
+      console.error("Xatolik yuz berdi:", error);
+
+      message.error("Xatolik yuz berdi, qayta urinib ko'ring.");
+    }
+  };
 
   return (
     <Layout className="min-h-screen bg-gray-100">
@@ -277,7 +304,7 @@ const ProductPage: React.FC = () => {
                     cover={
                       <img
                         alt={product.name}
-                        src={product.photos[0] || "/placeholder.jpg"}
+                        src={`http://${product.photos}`}
                         className="h-48 w-full object-cover"
                       />
                     }
@@ -494,18 +521,22 @@ const ProductPage: React.FC = () => {
       </Content>
       <div className="bg-[#F2F8FF] w-full py-[40px] my-[30px] flex flex-col items-center max-w-full mx-auto">
         <div className="max-w-screen-md text-center mx-auto px-4">
-          <h1 className="font-bold">{t("callbacks")}</h1>
-          <p>{t("callbackDescription")}</p>
+          <h1 className="font-bold">{t("callback")}</h1>
+          <p className="max-w-[390px] mx-auto mt-2">
+            {t("callbackDescription")}
+          </p>
           <InputContainer>
             <Input
               placeholder={t("yourName")}
-              className="w-full sm:w-[200px] mx-auto mb-4"
+              className="w-full sm:w-[200px] mb-4"
+              onChange={(e) => setName(e.target.value)}
             />
             <Input
               placeholder={t("yourEmail")}
-              className="w-full sm:w-[200px] mx-auto mb-4"
+              className="w-full sm:w-[200px] mb-4"
+              onChange={(e) => setEmail(e.target.value)}
             />
-            <Button type="primary" className="w-full sm:w-auto">
+            <Button type="primary" onClick={Submit}>
               {t("submit")}
             </Button>
           </InputContainer>

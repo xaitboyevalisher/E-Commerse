@@ -13,15 +13,24 @@ import {
   message,
 } from "antd";
 import { BiChevronLeft, BiChevronRight } from "react-icons/bi";
-import { FaCheck, FaGift } from "react-icons/fa";
-import { AiOutlineClose } from "react-icons/ai";
+import { FaCheck, FaCheckCircle, FaGift } from "react-icons/fa";
+import { AiOutlineClose, AiOutlineStar } from "react-icons/ai";
 import { useQuery } from "@tanstack/react-query";
+import styled from "@emotion/styled";
 import api from "../api/api";
 import Header from "../components/Headers";
 import Footers from "@src/components/Headers/Footer";
 import { Service, Category, Product, ContactRequest } from "../types";
 
 const { Content } = Layout;
+
+const InputContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-top: 1rem;
+  flex-wrap: wrap;
+`;
 
 const Home = () => {
   const [name, setName] = useState("");
@@ -40,7 +49,6 @@ const Home = () => {
       return response.data.data;
     }
   );
-  console.log(categories, "salommsamsdmdasj");
 
   const { data: services = [] } = useQuery<Service[]>(
     ["services"],
@@ -53,8 +61,11 @@ const Home = () => {
   const { data: popularProducts = [] } = useQuery<Product[]>(
     ["products"],
     async () => {
-      const response = await api.get("product");
-      return response.data;
+      const response = await api.get(`/lock/get-all-by-filter`, {
+        params: { page: 0, size: 10 },
+        headers: { "Accept-Language": language },
+      });
+      return response.data.data;
     }
   );
   console.log(popularProducts, "popup");
@@ -262,7 +273,7 @@ const Home = () => {
             justify="center"
             className="w-full max-w-screen-lg"
           >
-            {categories?.map((category: unknown) => (
+            {categories?.map((category: Category) => (
               <Col
                 xs={24}
                 sm={12}
@@ -277,21 +288,22 @@ const Home = () => {
                   style={{ width: "600px", height: "470px", padding: "0" }}
                 >
                   <img
-                    src={category.image}
-                    alt={i18n.t(`categoriesList.${category.title}`)}
-                    className="absolute right-0 top-0"
-                    style={{ width: "600px", height: "470px", padding: "0" }}
+                    src={`http://${category.photoPath}`}
+                    alt={category.name}
+                    style={{
+                      width: "100%",
+                      height: "80%",
+                      objectFit: "cover",
+                    }}
                   />
                   <div className="absolute bottom-0 left-0 right-0 p-4">
-                    <div className="text-lg font-semibold">
-                      {i18n.t(`categoriesList.${category.title}`)}
-                    </div>
+                    <div className="text-lg font-semibold">{category.name}</div>
                     <Button
                       type="default"
                       style={{ width: "200px", height: "50px" }}
                       className="mt-4"
                     >
-                      {i18n.t("goTo")}
+                      Go to
                     </Button>
                   </div>
                 </Card>
@@ -319,56 +331,59 @@ const Home = () => {
               className="flex justify-center"
             >
               <Card
-                hoverable
-                className="shadow-md hover:shadow-lg transition-shadow relative overflow-hidden w-[240px] h-[380px]"
+                key={product.id}
+                className="rounded-md shadow-md hover:shadow-lg transition-shadow relative overflow-hidden"
                 cover={
-                  <div className="relative">
-                    {!product.available && (
-                      <div className="absolute top-2 left-2 flex flex-col gap-1">
-                        <Tag color="red" className="flex items-center gap-1">
-                          <AiOutlineClose className="text-lg" />{" "}
-                          {t("notAvailable")}
-                        </Tag>
-                        {product.hasGift && (
-                          <Tag color="blue" className="flex items-center gap-1">
-                            <FaGift className="text-lg" /> {t("gift")}
-                          </Tag>
-                        )}
-                      </div>
-                    )}
-                    {product.onSale && (
-                      <Tag color="green" className="absolute top-2 right-2">
-                        SALE
-                      </Tag>
-                    )}
-                    {product.available && (
-                      <div className="absolute top-2 left-2 flex flex-col items-start gap-1">
-                        <Tag color="green" className="flex items-center gap-1">
-                          <FaCheck className="text-lg" /> {t("available")}
-                        </Tag>
-                        {product.hasGift && (
-                          <Tag color="blue" className="flex items-center gap-1">
-                            <FaGift className="text-lg" /> {t("gift")}
-                          </Tag>
-                        )}
-                      </div>
-                    )}
-                    <img
-                      alt={product.title}
-                      src={product.image}
-                      className="w-full h-[240px] object-cover"
-                    />
-                  </div>
+                  <img
+                    alt={product.name}
+                    src={`http://${product.photos}`}
+                    className="h-48 w-full object-cover"
+                  />
                 }
               >
-                <h3 className="font-bold text-lg">{product.title}</h3>
-                <div className="flex items-center mt-2">
-                  <span className="text-blue-600 text-xl font-semibold">
-                    {product.price}
+                {product.newPrice < product.price && (
+                  <div className="absolute top-2 right-2 z-10">
+                    <span className="bg-white-500 text-black text-white px-2 py-1 text-xs font-bold rounded">
+                      SALE
+                    </span>
+                  </div>
+                )}
+
+                <div className="absolute top-2 left-2 z-10">
+                  <span className="flex items-center gap-1 text-green-500">
+                    <FaCheckCircle /> В наличии
                   </span>
-                  <span className="text-gray-400 line-through ml-2">
-                    {product.originalPrice}
-                  </span>
+
+                  {product.hasGift && (
+                    <span className="flex items-center gap-1 text-yellow-500 mt-2">
+                      <FaGift /> Подарок
+                    </span>
+                  )}
+                </div>
+
+                <div className="p-3">
+                  <h3 className="font-semibold text-lg">{product.name}</h3>
+                  <div className="flex items-center mt-2">
+                    {[...Array(5)].map((_, index) => (
+                      <AiOutlineStar key={index} className="text-gray-300" />
+                    ))}
+                    <span className="text-gray-500 text-sm ml-2">
+                      (0 отзывов)
+                    </span>
+                  </div>
+                  <div className="flex items-center mt-2 gap-3">
+                    <span className="text-lg font-bold text-black flex items-center gap-1">
+                      ${product.price}
+                    </span>
+                    {product.newPrice < product.price && (
+                      <span className="line-through text-gray-500 mr-2">
+                        ${product.newPrice}
+                      </span>
+                    )}
+                  </div>
+                  <Button type="primary" block className="mt-4">
+                    Add to Cart
+                  </Button>
                 </div>
               </Card>
             </Col>
@@ -377,29 +392,33 @@ const Home = () => {
 
         <div className="bg-[#F2F8FF] w-full py-[40px] my-[30px] flex flex-col items-center max-w-full mx-auto">
           <div className="max-w-screen-md text-center mx-auto px-4">
-            <h1 className="font-bold">{t("callbacks")}</h1>
-            <p>{t("callbackDescription")}</p>
+            <h1 className="font-bold">{t("callback")}</h1>
+            <p className="max-w-[390px] mx-auto mt-2">
+              {t("callbackDescription")}
+            </p>
             <div>
-              <Input
-                placeholder={t("yourName")}
-                className="w-full sm:w-[200px] mx-auto mb-4"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-              />
-              <Input
-                placeholder={t("yourEmail")}
-                className="w-full sm:w-[200px] mx-auto mb-4"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-              />
-              <Button
-                type="primary"
-                className="w-full sm:w-auto"
-                onClick={handleSubmit}
-                disabled={!name || !email}
-              >
-                {t("submit")}
-              </Button>
+              <InputContainer>
+                <Input
+                  placeholder={t("yourName")}
+                  className="w-full sm:w-[200px] mb-4"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                />
+                <Input
+                  placeholder={t("yourEmail")}
+                  className="w-full sm:w-[200px] mb-4"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                />
+                <Button
+                  type="primary"
+                  className="w-full sm:w-auto"
+                  onClick={handleSubmit}
+                  disabled={!name || !email}
+                >
+                  {t("submit")}
+                </Button>
+              </InputContainer>
             </div>
           </div>
         </div>
