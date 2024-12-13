@@ -1,20 +1,10 @@
 import { useState, useEffect, useRef } from "react";
 import { useTranslation } from "react-i18next";
 import i18n from "../i18/i18";
-import {
-  Layout,
-  Button,
-  Card,
-  Row,
-  Tag,
-  Col,
-  Carousel,
-  Input,
-  message,
-} from "antd";
+import { Layout, Button, Card, Row, Col, Carousel, Input, message } from "antd";
 import { BiChevronLeft, BiChevronRight } from "react-icons/bi";
-import { FaCheck, FaCheckCircle, FaGift } from "react-icons/fa";
-import { AiOutlineClose, AiOutlineStar } from "react-icons/ai";
+import { FaCheckCircle, FaGift } from "react-icons/fa";
+import { AiOutlineStar } from "react-icons/ai";
 import { useQuery } from "@tanstack/react-query";
 import styled from "@emotion/styled";
 import api from "../api/api";
@@ -237,29 +227,57 @@ const Home = () => {
           Почему GoldenService?
         </h2>
         <Row gutter={[16, 16]} justify="center" className="w-full">
-          {services.map((service, index) => (
-            <Col
-              xs={24}
-              sm={12}
-              md={8}
-              key={index}
-              className="flex justify-center"
+          <Col xs={24} sm={12} md={8} className="flex justify-center">
+            <Card
+              bordered={false}
+              className="shadow-md hover:shadow-lg transition-shadow w-[300px] mx-auto"
             >
-              <Card
-                bordered={false}
-                className="shadow-md hover:shadow-lg transition-shadow w-[300px] mx-auto"
-              >
-                <div className="flex justify-center py-4">
-                  <img
-                    src={service.image}
-                    alt={`Service ${index + 1}`}
-                    style={{ width: 82, height: 62 }}
-                  />
-                </div>
-                <div className="text-center text-gray-600">{service.title}</div>
-              </Card>
-            </Col>
-          ))}
+              <div className="flex justify-center py-4">
+                <img
+                  src="/product-return 1 (3).png"
+                  alt="Возврат удвоенной стоимости"
+                  style={{ width: 82, height: 62 }}
+                />
+              </div>
+              <div className="text-center text-gray-600">
+                Возврат удвоенной стоимости каждого замка в случае брака.
+              </div>
+            </Card>
+          </Col>
+          <Col xs={24} sm={12} md={8} className="flex justify-center">
+            <Card
+              bordered={false}
+              className="shadow-md hover:shadow-lg transition-shadow w-[300px] mx-auto"
+            >
+              <div className="flex justify-center py-4">
+                <img
+                  src="/evaluate 1 (1).png"
+                  alt="Логотип компании"
+                  style={{ width: 82, height: 62 }}
+                />
+              </div>
+              <div className="text-center text-gray-600">
+                Наносим ваш логотип компании на наш продукт.
+              </div>
+            </Card>
+          </Col>
+          <Col xs={24} sm={12} md={8} className="flex justify-center">
+            <Card
+              bordered={false}
+              className="shadow-md hover:shadow-lg transition-shadow w-[300px] mx-auto"
+            >
+              <div className="flex justify-center py-4">
+                <img
+                  src="/product-return 1 (3).png"
+                  alt="Возврат удвоенной стоимости"
+                  style={{ width: 82, height: 62 }}
+                />
+              </div>
+              <div className="text-center text-gray-600">
+                Возврат удвоенной стоимости каждого замка в случае брака.
+              </div>
+            </Card>
+          </Col>
         </Row>
       </div>
 

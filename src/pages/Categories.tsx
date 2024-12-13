@@ -3,7 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import api from "../api/api";
 import Header from "../components/Headers";
 import Footers from "../components/Headers/Footer";
-import { Card, Col, Layout, Row, Spin, Button, Select } from "antd";
+import { Card, Col, Layout, Row, Spin, Button } from "antd";
 import { useTranslation } from "react-i18next";
 
 interface Category {
@@ -17,20 +17,22 @@ interface Category {
 const Categories = () => {
   const [isDesktop, setIsDesktop] = useState(window.innerWidth >= 774);
   const [visibleCount, setVisibleCount] = useState(8);
-  const [language, setLanguage] = useState("en");
-  const { t, i18n } = useTranslation();
+  const { t, i18n } = useTranslation(); // i18n langni olish
 
+  // Tilga bog'liq ravishda kategoriya nomlarini olish
   const { data: categories = [], isLoading: categoriesLoading } = useQuery<
     Category[]
-  >(["categories", language], async () => {
-    const response = await api.get("/category/get-all", {
-      params: { page: 0, size: 10 },
-      headers: { "Accept-Language": language },
-    });
-    return response.data.data;
-  });
-
-  console.log(i18n.language);
+  >(
+    ["categories", i18n.language], // Tilni o'zgartirishda qayta so'rov yuboriladi
+    async () => {
+      const response = await api.get("/category/get-all", {
+        params: { page: 0, size: 10 },
+        headers: { "Accept-Language": i18n.language }, // Tilni so'rovga qo'shamiz
+      });
+      return response.data.data;
+    },
+    { keepPreviousData: true }
+  );
 
   useEffect(() => {
     const handleResize = () => setIsDesktop(window.innerWidth >= 774);
@@ -56,26 +58,15 @@ const Categories = () => {
     setVisibleCount(categories.length);
   };
 
-  const handleLanguageChange = (value: string) => {
-    setLanguage(value);
-  };
-
   return (
     <Layout>
       <Header isDesktop={isDesktop} />
       <div className="combined-container">
         <div className="categories py-12 flex flex-col items-center">
-          <h2 className="text-center text-2xl font-bold mb-8">Categories</h2>
+          <h2 className="text-center text-2xl font-bold mb-8">
+            {t("categories")}
+          </h2>
 
-          <Select
-            defaultValue="en"
-            style={{ width: 120, marginBottom: 20 }}
-            onChange={handleLanguageChange}
-          >
-            <Select.Option value="en">English</Select.Option>
-            <Select.Option value="uz">Uzbek</Select.Option>
-            <Select.Option value="ru">Russian</Select.Option>
-          </Select>
           <Row
             gutter={[32, 32]}
             justify="center"
@@ -137,7 +128,7 @@ const Categories = () => {
                 fontSize: "16px",
               }}
             >
-              Show All Categories
+              {t("showAllCategories")}
             </Button>
           )}
         </div>

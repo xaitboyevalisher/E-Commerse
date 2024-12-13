@@ -3,13 +3,12 @@ import { Checkbox } from "antd";
 const DeliveryPaymentReturn = () => {
   return (
     <div className="container mx-auto px-4 py-8">
-      
       <section className="mb-12">
         <h2 className="text-3xl font-bold mb-6">Доставка</h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <div className="border rounded-lg p-4">
             <img
-              src="/path-to-russian-post.png"
+              src="/1.png"
               alt="Почта России"
               className="mb-4 w-full h-auto"
             />
@@ -27,7 +26,7 @@ const DeliveryPaymentReturn = () => {
           </div>
           <div className="border rounded-lg p-4">
             <img
-              src="/path-to-business-lines.png"
+              src="/1 (1).png"
               alt="Деловые линии"
               className="mb-4 w-full h-auto"
             />
@@ -44,11 +43,7 @@ const DeliveryPaymentReturn = () => {
             </ul>
           </div>
           <div className="border rounded-lg p-4">
-            <img
-              src="/path-to-sdek.png"
-              alt="СДЭК"
-              className="mb-4 w-full h-auto"
-            />
+            <img src="/1 (2).png" alt="СДЭК" className="mb-4 w-full h-auto" />
             <h3 className="text-lg font-semibold mb-2">СДЭК</h3>
             <ul className="list-none space-y-1 text-gray-700">
               <li>
@@ -64,13 +59,12 @@ const DeliveryPaymentReturn = () => {
         </div>
       </section>
 
-     
       <section className="mb-12">
         <h2 className="text-3xl font-bold mb-6">Оплата</h2>
         <div className="mb-6">
           <h3 className="flex items-center text-lg font-semibold mb-2">
             <img
-              src="/path-to-card-icon.png"
+              src="/credit-card (1) 1.png"
               alt="Банковская карта"
               className="w-6 h-6 mr-2"
             />
@@ -86,7 +80,7 @@ const DeliveryPaymentReturn = () => {
         <div>
           <h3 className="flex items-center text-lg font-semibold mb-2">
             <img
-              src="/path-to-cash-icon.png"
+              src="/Frame.png"
               alt="Оплата при получении"
               className="w-6 h-6 mr-2"
             />
@@ -101,7 +95,6 @@ const DeliveryPaymentReturn = () => {
         </div>
       </section>
 
-      
       <section className="mb-12">
         <h2 className="text-3xl font-bold mb-6">Гарантии</h2>
         <p className="text-gray-700">
@@ -117,23 +110,40 @@ const DeliveryPaymentReturn = () => {
         </ul>
       </section>
 
-      
       <section className="mb-12">
         <h2 className="text-3xl font-bold mb-6">Возврат товара</h2>
         <p className="text-gray-700 mb-4">
           Подготовьте, пожалуйста, все необходимые документы:
         </p>
         <ul className="list-disc list-inside mb-4 text-gray-700">
-          <li>Чек, подтверждающий покупку.</li>
-          <li>Заполненный бланк возврата.</li>
           <li>
-            Копию паспорта или другого документа, удостоверяющего личность.
+            выданный продавцом расчетный документ (чек / акт приема-передачи /
+            накладная или др.), подтверждающий факт приобретения;
+          </li>
+          <li>гарантийный талон;</li>
+          <li>документ, удостоверяющий личность;</li>
+          <li>идентификационный налоговый номер (ИНН);</li>
+          <li>
+            в случае оплаты покупки банковской картой — актуальные реквизиты
+            карточного счета.
           </li>
         </ul>
+        <p className="text-gray-700 mb-4">
+          Передайте товар на гарантийное обслуживание, обязательно приложите
+          указанные выше документы.
+        </p>
         <p className="text-gray-700">
-          Передайте товар в гарантийное обслуживание, обязательно указав
-          вышеуказанные документы. Свяжитесь с нами для получения дополнительной
-          информации.
+          Полезная информация о правах потребителя в случае приобретения им
+          товара ненадлежащего качества —{" "}
+          <a href="#" className="text-blue-600 underline">
+            Закон РФ «О защите прав потребителей»
+          </a>
+          .
+        </p>
+        <p className="text-gray-700">
+          Уважаемый покупатель, приносим извинения за неудобства, случившиеся в
+          связи с выходом из строя. По вашему обращению будут приняты все меры
+          для быстрого решения вашей проблемы.
         </p>
       </section>
     </div>

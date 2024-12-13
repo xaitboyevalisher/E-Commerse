@@ -77,7 +77,9 @@ const Footers = () => {
             <Col span={24} md={3}>
               <h3 className="text-white text-lg mb-3">{t("footerInfo")}</h3>
               <ul className="space-y-1 text-gray-400">
-                <li>{t("deliveryPayment")}</li>
+                <li>
+                  <Link to="/payment">{t("deliveryPayment")}</Link>
+                </li>
                 <li>{t("guarantees")}</li>
                 <li>{t("returns")}</li>
               </ul>
