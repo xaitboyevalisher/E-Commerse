@@ -27,7 +27,6 @@ const Home = () => {
   const [email, setEmail] = useState("");
   const [isDesktop, setIsDesktop] = useState(window.innerWidth >= 774);
   const { t } = useTranslation();
-  const [visibleCount, setVisibleCount] = useState(8);
   const [language, setLanguage] = useState("en");
   const { data: categories = [], isLoading: categoriesLoading } = useQuery(
     ["categories", language],
@@ -37,14 +36,6 @@ const Home = () => {
         headers: { "Accept-Language": language },
       });
       return response.data.data;
-    }
-  );
-
-  const { data: services = [] } = useQuery<Service[]>(
-    ["services"],
-    async () => {
-      const response = await api.get("service");
-      return response.data;
     }
   );
 
@@ -306,7 +297,7 @@ const Home = () => {
                   style={{ width: "600px", height: "470px", padding: "0" }}
                 >
                   <img
-                    src={`http://${category.photoPath}`}
+                    src={category.photoPath}
                     alt={category.name}
                     style={{
                       width: "100%",
@@ -314,6 +305,7 @@ const Home = () => {
                       objectFit: "cover",
                     }}
                   />
+
                   <div className="absolute bottom-0 left-0 right-0 p-4">
                     <div className="text-lg font-semibold">{category.name}</div>
                     <Button
@@ -352,11 +344,18 @@ const Home = () => {
                 key={product.id}
                 className="rounded-md shadow-md hover:shadow-lg transition-shadow relative overflow-hidden"
                 cover={
-                  <img
-                    alt={product.name}
-                    src={`http://${product.photos}`}
-                    className="h-48 w-full object-cover"
-                  />
+                  product.photos?.[0] ? (
+                    <img
+                      alt={product.name}
+                     
+                      src={product.photos[0]} 
+                      className="h-48 w-full object-cover"
+                    />
+                  ) : (
+                    <div className="h-48 w-full bg-gray-200 flex items-center justify-center">
+                      <span className="text-gray-500">No Image</span>
+                    </div>
+                  )
                 }
               >
                 {product.newPrice < product.price && (

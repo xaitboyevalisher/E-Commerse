@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next";
 import styled from "@emotion/styled";
 import api from "../api/api";
 import { useQuery } from "@tanstack/react-query";
+import { Link } from "react-router-dom";
 import {
   Layout,
   Slider,
@@ -302,11 +303,17 @@ const ProductPage = () => {
                     key={product.id}
                     className="rounded-md shadow-md hover:shadow-lg transition-shadow relative overflow-hidden"
                     cover={
-                      <img
-                        alt={product.name}
-                        src={`http://${product.photos}`}
-                        className="h-48 w-full object-cover"
-                      />
+                      product.photos?.[0] ? (
+                        <img
+                          alt={product.name}
+                          src={product.photos[0]}
+                          className="h-48 w-full object-cover"
+                        />
+                      ) : (
+                        <div className="h-48 w-full bg-gray-200 flex items-center justify-center">
+                          <span className="text-gray-500">No Image</span>
+                        </div>
+                      )
                     }
                   >
                     {product.newPrice < product.price && (
@@ -330,7 +337,14 @@ const ProductPage = () => {
                     </div>
 
                     <div className="p-3">
-                      <h3 className="font-semibold text-lg">{product.name}</h3>
+                      <h3 className="font-semibold text-lg">
+                        <Link
+                          to={`/product/${product.id}`}
+                          className="text-blue-600 hover:underline"
+                        >
+                          {product.name}
+                        </Link>
+                      </h3>
                       <div className="flex items-center mt-2">
                         {[...Array(5)].map((_, index) => (
                           <AiOutlineStar
@@ -352,9 +366,6 @@ const ProductPage = () => {
                           </span>
                         )}
                       </div>
-                      <Button type="primary" block className="mt-4">
-                        Add to Cart
-                      </Button>
                     </div>
                   </Card>
                 ))}

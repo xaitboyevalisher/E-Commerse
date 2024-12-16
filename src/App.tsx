@@ -14,6 +14,7 @@ import LoginPage from "./login";
 import Register from "./Register";
 import Profile from "./Profile";
 import Payment from "./pages/Payment";
+import ProductDetails from "./pages/Productdetail";
 
 const queryClient = new QueryClient();
 
@@ -33,6 +34,7 @@ const App = () => {
           <Route path="/aboutus" element={<AboutUs />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<Register />} />
+          <Route path="/product/:id" element={<ProductDetails />} />
           <Route path="/payment" element={<Payment />} />
           <Route
             path="/profile"

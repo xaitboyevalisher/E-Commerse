@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Menu, Button, Dropdown, Badge, Layout } from "antd";
+import { Menu, Button, Dropdown, Badge, Layout, Modal } from "antd";
 import { IoIosArrowDown, IoIosArrowUp } from "react-icons/io";
 import { FaBars, FaPhoneAlt, FaUser } from "react-icons/fa";
 import { AiOutlineShoppingCart, AiOutlineHeart } from "react-icons/ai";
@@ -10,6 +10,8 @@ import { Link, useNavigate } from "react-router-dom";
 const Header = ({ isDesktop }: { isDesktop: boolean }) => {
   const [isCatalogOpen, setIsCatalogOpen] = useState(false);
   const [isMenuOpen, setMenuOpen] = useState(false);
+  const [cart, setCart] = useState<any[]>([]); // Cart state
+  const [isModalVisible, setIsModalVisible] = useState(false); // Cart modal visibility
   const { t, i18n } = useTranslation();
   const navigate = useNavigate();
   const [userName, setUserName] = useState<string | null>(null);
@@ -50,6 +52,21 @@ const Header = ({ isDesktop }: { isDesktop: boolean }) => {
     } else {
       navigate("/profile");
     }
+  };
+
+  // Add product to cart
+  const addToCart = (product: any) => {
+    setCart((prevCart) => [...prevCart, product]);
+  };
+
+  // Open cart modal
+  const showCartModal = () => {
+    setIsModalVisible(true);
+  };
+
+  // Close cart modal
+  const handleCloseModal = () => {
+    setIsModalVisible(false);
   };
 
   const { Header: AntHeader } = Layout;
@@ -239,8 +256,11 @@ const Header = ({ isDesktop }: { isDesktop: boolean }) => {
 
             <div className="flex items-center gap-4">
               <AiOutlineHeart className="text-2xl text-gray-600" />
-              <Badge count={""} size="small" offset={[10, 0]}>
-                <AiOutlineShoppingCart className="text-2xl text-gray-600" />
+              <Badge count={cart.length} size="small" offset={[10, 0]}>
+                <AiOutlineShoppingCart
+                  className="text-2xl text-gray-600 cursor-pointer"
+                  onClick={showCartModal}
+                />
               </Badge>
               <div
                 className="flex items-center cursor-pointer"
@@ -264,6 +284,40 @@ const Header = ({ isDesktop }: { isDesktop: boolean }) => {
           </div>
         </div>
       </AntHeader>
+
+      {/* Cart Modal */}
+      <Modal
+        title="Your Cart"
+        visible={isModalVisible}
+        onCancel={handleCloseModal}
+        footer={null}
+        width={500}
+      >
+        <div className="space-y-4">
+          {cart.length === 0 ? (
+            <p>Your cart is empty.</p>
+          ) : (
+            cart.map((product, index) => (
+              <div key={index} className="flex items-center justify-between">
+                <img
+                  src={product.image}
+                  alt={product.name}
+                  className="w-12 h-12 object-cover"
+                />
+                <div>
+                  <p>{product.name}</p>
+                  <p>{product.price}₽</p>
+                </div>
+              </div>
+            ))
+          )}
+        </div>
+        <div className="flex justify-end mt-4">
+          <Button type="primary" onClick={handleCloseModal}>
+            Checkout
+          </Button>
+        </div>
+      </Modal>
     </div>
   );
 };

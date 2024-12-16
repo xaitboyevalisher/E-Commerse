@@ -97,7 +97,7 @@ const Categories = () => {
                     }}
                   >
                     <img
-                      src={`http://${category.photoPath}`}
+                      src={category.photoPath} 
                       alt={category.name}
                       style={{
                         width: "100%",
@@ -105,6 +105,7 @@ const Categories = () => {
                         objectFit: "cover",
                       }}
                     />
+
                     <div
                       style={{
                         fontSize: "14px",

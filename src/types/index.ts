@@ -90,6 +90,7 @@ export interface Product {
   deleted: boolean;
   createdAt: string;
   updatedAt: string;
+  colors: string[];
 };
 
 export interface ApiResponse<T>  {
