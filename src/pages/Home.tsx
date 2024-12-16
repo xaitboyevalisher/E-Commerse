@@ -346,8 +346,7 @@ const Home = () => {
                 cover={
                   product.photos?.[0] ? (
                     <img
-                      alt={product.name}
-                     
+                      alt={product.name}                     
                       src={product.photos[0]} 
                       className="h-48 w-full object-cover"
                     />
