@@ -1,10 +1,9 @@
 import { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import styled from "@emotion/styled";
 import api from "../api/api";
 import { useQuery } from "@tanstack/react-query";
-import { Link } from "react-router-dom";
 import {
   Layout,
   Slider,
@@ -366,6 +365,9 @@ const ProductPage = () => {
                           </span>
                         )}
                       </div>
+                      <Button type="primary" block className="mt-4">
+                        Add to Cart
+                      </Button>
                     </div>
                   </Card>
                 ))}
