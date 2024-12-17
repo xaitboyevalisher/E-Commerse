@@ -1,20 +1,82 @@
 import { useState, useEffect } from "react";
-import { Menu, Button, Dropdown, Badge, Layout, Modal } from "antd";
+import {
+  Menu,
+  Button,
+  Dropdown,
+  Badge,
+  Layout,
+  InputNumber,
+  List,
+  Modal,
+  Typography,
+} from "antd";
 import { IoIosArrowDown, IoIosArrowUp } from "react-icons/io";
 import { FaBars, FaPhoneAlt, FaUser } from "react-icons/fa";
 import { AiOutlineShoppingCart, AiOutlineHeart } from "react-icons/ai";
 import { useTranslation } from "react-i18next";
 import i18n from "../../i18/i18";
 import { Link, useNavigate } from "react-router-dom";
+import { FiPlus, FiTrash } from "react-icons/fi";
+
+const { Text, Title } = Typography;
+
+type CartItem = {
+  id: number;
+  name: string;
+  price: number;
+  quantity: number;
+  image: string;
+  gift?: string;
+};
 
 const Header = ({ isDesktop }: { isDesktop: boolean }) => {
   const [isCatalogOpen, setIsCatalogOpen] = useState(false);
   const [isMenuOpen, setMenuOpen] = useState(false);
-  const [cart, setCart] = useState<any[]>([]); // Cart state
-  const [isModalVisible, setIsModalVisible] = useState(false); // Cart modal visibility
+  const [cart, setCart] = useState<any[]>([]);
+  const [isModalVisible, setIsModalVisible] = useState(false);
   const { t, i18n } = useTranslation();
   const navigate = useNavigate();
   const [userName, setUserName] = useState<string | null>(null);
+  const [cartItems, setCartItems] = useState<CartItem[]>([
+    {
+      id: 1,
+      name: "Дверной Замок Golden Soft для офиса",
+      price: 33000,
+      quantity: 2,
+      image: "lock-image-url",
+      gift: "Приложение к замкам Golden Service",
+    },
+  ]);
+
+  const handleQuantityChange = (id: number, quantity: number) => {
+    setCartItems((prev) =>
+      prev.map((item) => (item.id === id ? { ...item, quantity } : item))
+    );
+  };
+
+  const handleRemove = (id: number) => {
+    setCartItems((prev) => prev.filter((item) => item.id !== id));
+  };
+
+  const handleAddToCart = (item: Omit<CartItem, "quantity">) => {
+    setCartItems((prev) => {
+      const existingItem = prev.find((cartItem) => cartItem.id === item.id);
+      if (existingItem) {
+        return prev.map((cartItem) =>
+          cartItem.id === item.id
+            ? { ...cartItem, quantity: cartItem.quantity + 1 }
+            : cartItem
+        );
+      } else {
+        return [...prev, { ...item, quantity: 1 }];
+      }
+    });
+  };
+
+  const totalPrice = cartItems.reduce(
+    (total, item) => total + item.price * item.quantity,
+    0
+  );
 
   useEffect(() => {
     const storedName = localStorage.getItem("userName");
@@ -52,11 +114,6 @@ const Header = ({ isDesktop }: { isDesktop: boolean }) => {
     } else {
       navigate("/profile");
     }
-  };
-
-  // Add product to cart
-  const addToCart = (product: any) => {
-    setCart((prevCart) => [...prevCart, product]);
   };
 
   // Open cart modal
@@ -285,37 +342,102 @@ const Header = ({ isDesktop }: { isDesktop: boolean }) => {
         </div>
       </AntHeader>
 
-      {/* Cart Modal */}
       <Modal
-        title="Your Cart"
-        visible={isModalVisible}
+        title="Корзина"
+        open={isModalVisible}
         onCancel={handleCloseModal}
         footer={null}
-        width={500}
+        width={600}
       >
-        <div className="space-y-4">
-          {cart.length === 0 ? (
-            <p>Your cart is empty.</p>
-          ) : (
-            cart.map((product, index) => (
-              <div key={index} className="flex items-center justify-between">
-                <img
-                  src={product.image}
-                  alt={product.name}
-                  className="w-12 h-12 object-cover"
-                />
-                <div>
-                  <p>{product.name}</p>
-                  <p>{product.price}₽</p>
+        <List
+          dataSource={cartItems}
+          renderItem={(item) => (
+            <List.Item
+              key={item.id}
+              className="flex flex-col border-b pb-4 mb-4"
+            >
+              <div className="flex items-center w-full justify-between">
+                <div className="flex items-center">
+                  <img
+                    src={item.image}
+                    alt={item.name}
+                    className="w-20 h-20 object-cover mr-4"
+                  />
+                  <div>
+                    <Title level={5}>{item.name}</Title>
+                    {item.gift && (
+                      <Text type="secondary">
+                        + Подарок:{" "}
+                        <a href="#" className="text-blue-500 underline">
+                          {item.gift}
+                        </a>
+                      </Text>
+                    )}
+                  </div>
                 </div>
+                <div className="flex items-center">
+                  <InputNumber
+                    min={1}
+                    value={item.quantity}
+                    onChange={(value) =>
+                      handleQuantityChange(item.id, value || 1)
+                    }
+                    className="mr-4"
+                  />
+                  <Text strong>{item.price * item.quantity}₽</Text>
+                </div>
+                <Button
+                  type="text"
+                  danger
+                  icon={<FiTrash />}
+                  onClick={() => handleRemove(item.id)}
+                />
               </div>
-            ))
+            </List.Item>
           )}
+        />
+
+        <div className="mt-4 flex justify-between items-center">
+          <Title level={4}>
+            Итого: <span>{totalPrice}₽</span>
+          </Title>
+          <div>
+            <Button type="primary" className="mr-2">
+              Оформить заказ
+            </Button>
+            <Button>Продолжить покупки</Button>
+          </div>
         </div>
-        <div className="flex justify-end mt-4">
-          <Button type="primary" onClick={handleCloseModal}>
-            Checkout
-          </Button>
+
+        <div className="mt-6">
+          <Title level={5}>С этим покупают</Title>
+          <List
+            dataSource={[
+              {
+                id: 2,
+                name: "Замок Golden Soft",
+                price: 9000,
+                image: "lock-image-url",
+              },
+            ]}
+            renderItem={(item) => (
+              <List.Item key={item.id} className="flex items-center">
+                <img
+                  src={item.image}
+                  alt={item.name}
+                  className="w-12 h-12 object-cover mr-4"
+                />
+                <div className="flex-1">
+                  <Text>{item.name}</Text>
+                </div>
+                <Button
+                  type="link"
+                  icon={<FiPlus />}
+                  onClick={() => handleAddToCart(item)}
+                />
+              </List.Item>
+            )}
+          />
         </div>
       </Modal>
     </div>

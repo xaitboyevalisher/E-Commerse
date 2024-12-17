@@ -19,7 +19,7 @@ import ProductDetails from "./pages/Productdetail";
 const queryClient = new QueryClient();
 
 const PrivateRoute = ({ children }: { children: JSX.Element }) => {
-  const isAuthenticated = !!sessionStorage.getItem("accessToken"); // Token mavjudligini tekshirish
+  const isAuthenticated = !!sessionStorage.getItem("access_token"); 
   return isAuthenticated ? children : <Navigate to="/login" replace />;
 };
 

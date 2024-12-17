@@ -1,7 +1,7 @@
 import { Link, useParams } from "react-router-dom";
 import { Button, Select, Tabs, Collapse, Rate, Spin } from "antd";
 import { AiOutlineHeart } from "react-icons/ai";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation } from "@tanstack/react-query";
 import api from "../api/api";
 
 const { Option } = Select;
@@ -20,7 +20,6 @@ interface Lock {
   photos: string[];
 }
 
-// Backendga mahsulotlarni olish uchun so'rov
 const Locks = async (): Promise<Lock[]> => {
   const response = await api.get("/lock/get-all-by-filter", {
     params: {
@@ -31,17 +30,25 @@ const Locks = async (): Promise<Lock[]> => {
   return response.data.data;
 };
 
-// Mahsulot tafsilotlarini ko'rsatuvchi komponent
-const ProductDetails = () => {
-  const { id } = useParams(); // URL'dan id olish
+const addToBasket = async (lockId: number) => {
+  const response = await api.post(
+    "/basket/add",
+    { lockId },
+    { headers: { "Accept-Language": "UZ" } }
+  );
+  return response.data;
+};
 
-  // Mahsulotlar haqidagi ma'lumotlarni olish
+const ProductDetails = () => {
+  const { id } = useParams();
   const { data, isLoading, error } = useQuery({
     queryKey: ["locks"],
     queryFn: Locks,
   });
 
-  // Mahsulotlar yuklanayotgan bo'lsa
+  const { mutate: addToCart, isLoading: isAddingToCart } =
+    useMutation(addToBasket);
+
   if (isLoading) {
     return (
       <div className="flex justify-center items-center h-screen">
@@ -50,18 +57,21 @@ const ProductDetails = () => {
     );
   }
 
-  // Xatolik yuzaga kelsa
   if (error) {
     return <div>Xatolik yuz berdi: {(error as Error).message}</div>;
   }
 
-  // Backenddan olingan mahsulotlar ro'yxati
-  const lock = data?.find((lock) => lock.id.toString() === id); // `id` bo'yicha tegishli mahsulotni olish
+  const lock = data?.find((lock) => lock.id.toString() === id);
 
-  // Agar mahsulot topilmasa
   if (!lock) {
     return <div>Mahsulot tafsilotlari mavjud emas.</div>;
   }
+
+  const handleAddToCart = () => {
+    if (lock) {
+      addToCart(lock.id);
+    }
+  };
 
   return (
     <div className="container mx-auto p-4">
@@ -89,7 +99,6 @@ const ProductDetails = () => {
         </div>
 
         <div>
-          {/* Mahsulot nomi */}
           <h1 className="text-2xl font-semibold">
             <Link
               to={`/product/${lock.id}`}
@@ -136,7 +145,12 @@ const ProductDetails = () => {
               <p className="text-sm line-through text-gray-500">37 000₽</p>
             </div>
             <div className="flex items-center gap-2">
-              <Button type="primary" className="bg-blue-500 px-6">
+              <Button
+                type="primary"
+                className="bg-blue-500 px-6"
+                onClick={handleAddToCart} // "Köpít" tugmasi bosilganda savatga qo'shish
+                loading={isAddingToCart} // API so'rovi yuborilayotganini ko'rsatish
+              >
                 Купить
               </Button>
               <Button type="text">
