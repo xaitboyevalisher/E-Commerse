@@ -20,6 +20,7 @@ const queryClient = new QueryClient();
 
 const PrivateRoute = ({ children }: { children: JSX.Element }) => {
   const isAuthenticated = !!sessionStorage.getItem("accessToken");
+
   return isAuthenticated ? children : <Navigate to="/login" replace />;
 };
 
@@ -44,6 +45,7 @@ const App = () => {
               </PrivateRoute>
             }
           />
+          <Route path="/profile" element={<Profile />} />
           <Route path="/Katalog/Category" element={<Categories />} />
           <Route path="/product/:categoryTitle" element={<Product />} />
         </Routes>
