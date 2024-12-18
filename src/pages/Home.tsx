@@ -26,7 +26,8 @@ const Home = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [isDesktop, setIsDesktop] = useState(window.innerWidth >= 774);
-  const { t } = useTranslation();
+  const [visibleCount, setVisibleCount] = useState(8);
+  const { t, i18n } = useTranslation();
   const [language, setLanguage] = useState("en");
   const { data: categories = [], isLoading: categoriesLoading } = useQuery(
     ["categories", language],
@@ -65,6 +66,10 @@ const Home = () => {
       window.removeEventListener("resize", Resize);
     };
   }, []);
+
+  const handleShowMore = () => {
+    setVisibleCount(categories.length);
+  };
 
   const handleSubmit = async () => {
     const contactData: ContactRequest = { name, email };
@@ -275,54 +280,74 @@ const Home = () => {
       <div className="combined-container">
         <div className="categories py-12 flex flex-col items-center">
           <h2 className="text-center text-2xl font-bold mb-8">
-            {i18n.t("categories")}
+            {t("categories")}
           </h2>
+
           <Row
             gutter={[32, 32]}
             justify="center"
             className="w-full max-w-screen-lg"
           >
-            {categories?.map((category: Category) => (
-              <Col
-                xs={24}
-                sm={12}
-                md={12}
-                lg={12}
-                key={category.id}
-                className="flex justify-center"
-              >
-                <Card
-                  hoverable
-                  className="shadow-md hover:shadow-lg transition-shadow relative overflow-hidden"
-                  style={{ width: "600px", height: "470px", padding: "0" }}
+            {Array.isArray(categories) &&
+              categories.slice(0, visibleCount).map((category) => (
+                <Col
+                  xs={24}
+                  sm={12}
+                  md={8}
+                  lg={6}
+                  key={category.id}
+                  className="flex justify-center"
                 >
-                  <img
-                    src={category.photoPath}
-                    alt={category.name}
+                  <Card
+                    hoverable
+                    className="shadow-md hover:shadow-lg transition-shadow relative overflow-hidden"
                     style={{
                       width: "100%",
-                      height: "80%",
-                      objectFit: "cover",
+                      height: "100%",
+                      display: "flex",
+                      flexDirection: "column",
+                      textAlign: "center",
                     }}
-                  />
+                    bodyStyle={{
+                      padding: "12px",
+                    }}
+                  >
+                    <img
+                      src={category.photoPath}
+                      alt={category.name}
+                      style={{
+                        width: "100%",
+                        height: "80%",
+                        objectFit: "cover",
+                      }}
+                    />
 
-                  <div className="absolute bottom-0 left-0 right-0 p-4">
-                    <div className="text-lg font-semibold">{category.name}</div>
-                    <Button
-                      type="default"
-                      style={{ width: "200px", height: "50px" }}
-                      className="mt-4"
+                    <div
+                      style={{
+                        fontSize: "14px",
+                        fontWeight: "bold",
+                        marginTop: "8px",
+                      }}
                     >
-                      Go to
-                    </Button>
-                  </div>
-                </Card>
-              </Col>
-            ))}
+                      {category.name}
+                    </div>
+                  </Card>
+                </Col>
+              ))}
           </Row>
-          <Button type="primary" className="mt-8 px-8 py-2">
-            {i18n.t("allCategories")}
-          </Button>
+          {visibleCount < categories.length && (
+            <Button
+              type="primary"
+              onClick={handleShowMore}
+              className="mt-8"
+              style={{
+                padding: "10px 20px",
+                fontSize: "16px",
+              }}
+            >
+              {t("showAllCategories")}
+            </Button>
+          )}
         </div>
       </div>
 
@@ -346,8 +371,8 @@ const Home = () => {
                 cover={
                   product.photos?.[0] ? (
                     <img
-                      alt={product.name}                     
-                      src={product.photos[0]} 
+                      alt={product.name}
+                      src={product.photos[0]}
                       className="h-48 w-full object-cover"
                     />
                   ) : (
