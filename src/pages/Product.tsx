@@ -47,31 +47,26 @@ interface Product {
   photos: string[];
 }
 
-const useProducts = (language: string) => {
-  return useQuery<Product[]>({
-    queryKey: ["products", language],
-    queryFn: async () => {
-      const response = await api.get(`/lock/get-all-by-filter`, {
-        params: { startPrice: 0, page: 0, size: 10 },
-        headers: { "Accept-Language": language },
-      });
-      return response.data.data;
-    },
-  });
-};
-
 const ProductPage = () => {
   const { categoryTitle } = useParams<{ categoryTitle: string }>();
-  const [isPriceVisible, setIsPriceVisible] = useState(true);
-  const [isColorVisible, setIsColorVisible] = useState(false);
-  const [isMaterialVisible, setIsMaterialVisible] = useState(false);
-  const [isSizeVisible, setIsSizeVisible] = useState(false);
-  const [isOpen, setIsOpen] = useState(true);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [isDesktop, setIsDesktop] = useState(window.innerWidth >= 774);
   const { t } = useTranslation();
+
+  const useProducts = (language: string) => {
+    return useQuery<Product[]>({
+      queryKey: ["products", language],
+      queryFn: async () => {
+        const response = await api.get(`/lock/get-all-by-filter`, {
+          params: { startPrice: 0, page: 0, size: 10 },
+          headers: { "Accept-Language": language },
+        });
+        return response.data.data;
+      },
+    });
+  };
 
   const language = "en";
   const { data: products = [], isLoading: productsLoading } =
@@ -213,7 +208,6 @@ const ProductPage = () => {
                     )}
 
                     <div className="p-3">
-                      
                       <h3 className="font-semibold text-lg">
                         <Link
                           to={`/product/${product.id}`}

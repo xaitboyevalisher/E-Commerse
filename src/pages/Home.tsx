@@ -314,28 +314,45 @@ const Home = () => {
               >
                 <Card
                   hoverable
-                  className="shadow-md hover:shadow-lg transition-shadow relative overflow-hidden"
-                  style={{ width: "600px", height: "470px", padding: "0" }}
+                  className="shadow-md hover:shadow-lg transition-shadow relative flex items-center"
+                  style={{ width: "600px", height: "250px", padding: "0" }}
                 >
-                  <img
-                    src={category.photoPath}
-                    alt={category.name}
-                    style={{
-                      width: "100%",
-                      height: "80%",
-                      objectFit: "cover",
-                    }}
-                  />
-                  <div className="absolute bottom-0 left-0 right-0 p-4">
-                    <div className="text-lg font-semibold">{category.name}</div>
-                    <Button
-                      type="default"
-                      style={{ width: "200px", height: "50px" }}
-                      className="mt-4"
-                      onClick={() => handleGoToCategory(category.id)} // Kategoriya bo'yicha o'tish
-                    >
-                      {i18n.t("goTo")}
-                    </Button>
+                  <div className="flex flex-row items-center w-full h-full relative">
+                    <div className="flex flex-col w-1/2 relative">
+                      <div
+                        className="text-lg font-semibold"
+                        style={{
+                          position: "absolute",
+                          bottom: "45px",
+                        }}
+                      >
+                        {category.name}
+                      </div>
+                      <Button
+                        type="default"
+                        style={{
+                          width: "150px",
+                          height: "45px",
+                          marginTop: "85px",
+                          bottom: "-25px",
+                        }}
+                        onClick={() => handleGoToCategory(category.id)}
+                      >
+                        {i18n.t("goTo")}
+                      </Button>
+                    </div>
+
+                    <div className="w-1/2 h-full">
+                      <img
+                        src={category.photoPath}
+                        alt={category.name}
+                        style={{
+                          width: "100%",
+                          height: "100%",
+                          objectFit: "contain",
+                        }}
+                      />
+                    </div>
                   </div>
                 </Card>
               </Col>
@@ -344,7 +361,7 @@ const Home = () => {
           <Button
             type="primary"
             className="mt-8 px-8 py-2"
-            onClick={handleGoToAllCategories} // Barcha kategoriyalar sahifasiga o'tish
+            onClick={handleGoToAllCategories}
           >
             {i18n.t("allCategories")}
           </Button>
