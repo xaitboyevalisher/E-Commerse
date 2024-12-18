@@ -58,7 +58,6 @@
   "categories": "Categories",
   "forHotels": "For hotels",
   "forCabinets": "For cabinets",
-  "goTo": "Go to",
   "forOffices": "For offices",
   "locksForHome": "Locks for home",
   "allCategories": "All categories",
@@ -119,5 +118,6 @@
       "title": "Product Branding",
       "description": "We will apply your logo of any complexity to our products to make them more exclusive."
     }
-  }
+  },
+  "goTo": "Go to"
 }

@@ -10,7 +10,9 @@ import styled from "@emotion/styled";
 import api from "../api/api";
 import Header from "../components/Headers";
 import Footers from "@src/components/Headers/Footer";
-import { Service, Category, Product, ContactRequest } from "../types";
+import { Product, ContactRequest } from "../types";
+import { useNavigate } from "react-router-dom";
+
 const { Content } = Layout;
 
 const InputContainer = styled.div`
@@ -21,22 +23,33 @@ const InputContainer = styled.div`
   flex-wrap: wrap;
 `;
 
+interface Category {
+  id: number;
+  name: string;
+  photoPath: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
 const Home = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [isDesktop, setIsDesktop] = useState(window.innerWidth >= 774);
-  const [visibleCount, setVisibleCount] = useState(8);
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
   const [language, setLanguage] = useState("en");
-  const { data: categories = [], isLoading: categoriesLoading } = useQuery(
-    ["categories", language],
+  const navigate = useNavigate();
+  const { data: categories = [], isLoading: categoriesLoading } = useQuery<
+    Category[]
+  >(
+    ["categories", i18n.language],
     async () => {
       const response = await api.get("/category/get-all", {
         params: { page: 0, size: 10 },
-        headers: { "Accept-Language": language },
+        headers: { "Accept-Language": i18n.language },
       });
       return response.data.data;
-    }
+    },
+    { keepPreviousData: true }
   );
 
   const { data: popularProducts = [] } = useQuery<Product[]>(
@@ -66,10 +79,6 @@ const Home = () => {
     };
   }, []);
 
-  const handleShowMore = () => {
-    setVisibleCount(categories.length);
-  };
-
   const handleSubmit = async () => {
     const contactData: ContactRequest = { name, email };
 
@@ -92,6 +101,14 @@ const Home = () => {
       console.error("Xatolik yuz berdi:", error);
       message.error("Xatolik yuz berdi, qayta urinib ko'ring.");
     }
+  };
+
+  const handleGoToCategory = (id: any) => {
+    navigate(`/product/${id}`);
+  };
+
+  const handleGoToAllCategories = () => {
+    navigate("/Katalog/Category");
   };
 
   return (
@@ -279,74 +296,58 @@ const Home = () => {
       <div className="combined-container">
         <div className="categories py-12 flex flex-col items-center">
           <h2 className="text-center text-2xl font-bold mb-8">
-            {t("categories")}
+            {i18n.t("categories")}
           </h2>
-
           <Row
             gutter={[32, 32]}
             justify="center"
             className="w-full max-w-screen-lg"
           >
-            {Array.isArray(categories) &&
-              categories.slice(0, visibleCount).map((category) => (
-                <Col
-                  xs={24}
-                  sm={12}
-                  md={8}
-                  lg={6}
-                  key={category.id}
-                  className="flex justify-center"
+            {categories?.map((category: Category) => (
+              <Col
+                xs={24}
+                sm={12}
+                md={12}
+                lg={12}
+                key={category.id}
+                className="flex justify-center"
+              >
+                <Card
+                  hoverable
+                  className="shadow-md hover:shadow-lg transition-shadow relative overflow-hidden"
+                  style={{ width: "600px", height: "470px", padding: "0" }}
                 >
-                  <Card
-                    hoverable
-                    className="shadow-md hover:shadow-lg transition-shadow relative overflow-hidden"
+                  <img
+                    src={category.photoPath}
+                    alt={category.name}
                     style={{
                       width: "100%",
-                      height: "100%",
-                      display: "flex",
-                      flexDirection: "column",
-                      textAlign: "center",
+                      height: "80%",
+                      objectFit: "cover",
                     }}
-                    bodyStyle={{
-                      padding: "12px",
-                    }}
-                  >
-                    <img
-                      src={category.photoPath}
-                      alt={category.name}
-                      style={{
-                        width: "100%",
-                        height: "80%",
-                        objectFit: "cover",
-                      }}
-                    />
-
-                    <div
-                      style={{
-                        fontSize: "14px",
-                        fontWeight: "bold",
-                        marginTop: "8px",
-                      }}
+                  />
+                  <div className="absolute bottom-0 left-0 right-0 p-4">
+                    <div className="text-lg font-semibold">{category.name}</div>
+                    <Button
+                      type="default"
+                      style={{ width: "200px", height: "50px" }}
+                      className="mt-4"
+                      onClick={() => handleGoToCategory(category.id)} // Kategoriya bo'yicha o'tish
                     >
-                      {category.name}
-                    </div>
-                  </Card>
-                </Col>
-              ))}
+                      {i18n.t("goTo")}
+                    </Button>
+                  </div>
+                </Card>
+              </Col>
+            ))}
           </Row>
-          {visibleCount < categories.length && (
-            <Button
-              type="primary"
-              onClick={handleShowMore}
-              className="mt-8"
-              style={{
-                padding: "10px 20px",
-                fontSize: "16px",
-              }}
-            >
-              {t("showAllCategories")}
-            </Button>
-          )}
+          <Button
+            type="primary"
+            className="mt-8 px-8 py-2"
+            onClick={handleGoToAllCategories} // Barcha kategoriyalar sahifasiga o'tish
+          >
+            {i18n.t("allCategories")}
+          </Button>
         </div>
       </div>
 
