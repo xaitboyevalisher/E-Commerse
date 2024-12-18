@@ -314,35 +314,31 @@ const Wholesale = () => {
       </div>
 
       <div css={workSectionStyle}>
-        <Title level={2}>Как мы работаем</Title>
+        <Title level={2}>{t("how_we_work.title")}</Title>
         <div css={cardsContainer}>
           <Card>
-            <img src="/Shape.png" alt="Step 1" />
-            <Title level={3}>Оформление заявки</Title>
+            <img src="/Shape.png" alt={t("how_we_work.step_1.alt")} />
+            <Title level={3}>{t("how_we_work.step_1.title")}</Title>
             <Paragraph className="min-w-[370px]">
-              Вы оставляете заявку на сайте или связываетесь с нами по
-              указанному на сайте номеру телефона
+              {t("how_we_work.step_1.description")}
             </Paragraph>
           </Card>
           <Card>
-            <img src="/Shape (1).png" alt="Step 2" />
-            <Title level={3}>Согласование</Title>
+            <img src="/Shape (1).png" alt={t("how_we_work.step_2.alt")} />
+            <Title level={3}>{t("how_we_work.step_2.title")}</Title>
             <Paragraph className="min-w-[350px]">
-              Мы консультируем Вас, согласовываем стоимость и точное время
-              приезда нашего специалиста
+              {t("how_we_work.step_2.description")}
             </Paragraph>
           </Card>
           <Card>
-            <img src="/Shape (2).png" alt="Step 3" />
-            <Title level={3}>Отправка товара и установка</Title>
+            <img src="/Shape (2).png" alt={t("how_we_work.step_3.alt")} />
+            <Title level={3}>{t("how_we_work.step_3.title")}</Title>
             <Paragraph className="min-w-[350px]">
-              Наш специалист по монтажу замков выезжает к Вам в точно зазначеное
-              время по согласованному адресу
+              {t("how_we_work.step_3.description")}
             </Paragraph>
           </Card>
         </div>
       </div>
-
       <div>
         <h1 className="pl-8">Почему стоит выбрать нас</h1>
         <div className="features-container" css={featuresContainer}>
@@ -407,6 +403,7 @@ const Wholesale = () => {
           </div>
         </div>
       </div>
+
       <Carousel
         autoplay
         ref={carouselRef}

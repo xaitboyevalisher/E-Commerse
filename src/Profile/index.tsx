@@ -18,7 +18,8 @@ import api from "../api/api"; // API calls
 
 const Profile = () => {
   const [profilePhoto, setProfilePhoto] = useState<string | null>(null);
-  const [name, setName] = useState<string>("");
+  const [name, setName] = useState<string>(""); // Original name state
+  const [newName, setNewName] = useState<string>(""); // Temporary state for new name input
   const [isPasswordChangeVisible, setIsPasswordChangeVisible] = useState(false);
   const [isNameEditable, setIsNameEditable] = useState(false);
   const [oldPassword, setOldPassword] = useState("");
@@ -31,6 +32,7 @@ const Profile = () => {
     const userName = localStorage.getItem("userName");
     if (userName) {
       setName(userName);
+      setNewName(userName); // Initialize newName with the stored name
     }
   }, []);
 
@@ -83,8 +85,11 @@ const Profile = () => {
   };
 
   const NameSave = () => {
+    // Save the new name to localStorage and update the state
+    localStorage.setItem("userName", newName);
+    setName(newName); // Update the name with the new value
     setIsNameEditable(false);
-    console.log("Name updated to:", name);
+    console.log("Name updated to:", newName);
   };
 
   const PasswordClick = () => {
@@ -160,8 +165,8 @@ const Profile = () => {
           {isNameEditable && (
             <div>
               <Input
-                value={name}
-                onChange={(e) => setName(e.target.value)}
+                value={newName} // Bind to newName instead of name
+                onChange={(e) => setNewName(e.target.value)} // Update newName as user types
                 autoFocus
                 css={css`
                   margin-top: 8px;

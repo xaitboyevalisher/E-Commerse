@@ -76,5 +76,43 @@
   "companyRequired": "Kompaniya nomini kiriting",
   "phoneRequired": "Telefon raqamingizni kiriting",
   "productRequired": "Mahsulot nomini kiriting",
-  "quantityRequired": "Mahsulot sonini kiriting"
+  "quantityRequired": "Mahsulot sonini kiriting",
+  "how_we_work": {
+    "title": "Qanday ishlaymiz",
+    "step_1": {
+      "alt": "1-qadam",
+      "title": "Ariza berish",
+      "description": "Siz sayt orqali ariza yuborasiz yoki biz bilan saytimizda ko'rsatilgan telefon raqami orqali bog'lanasiz."
+    },
+    "step_2": {
+      "alt": "2-qadam",
+      "title": "Kelishuv",
+      "description": "Biz sizni maslahatlashamiz, narxni va mutaxassisimizning kelish vaqtini aniq belgilaymiz."
+    },
+    "step_3": {
+      "alt": "3-qadam",
+      "title": "Mahsulot jo'natish va o'rnatish",
+      "description": "Bizning qulflashni o'rnatish mutaxassisi belgilangan vaqtda keladi."
+    }
+  },
+  "choose_us": {
+    "title": "Nima uchun bizni tanlashingiz kerak",
+    "alt": "Nima uchun bizni tanlashingiz kerak",
+    "feature_1": {
+      "title": "Ikki baravar qiymatni qaytarish",
+      "description": "Har bir nuqsonli jo'natilgan mahsulot uchun biz sizga ikki baravar qiymatni qaytarib beramiz."
+    },
+    "feature_2": {
+      "title": "O'rnatish",
+      "description": "Biz har qanday murakkablikdagi o'rnatish ishlarini va sizga qulay bo'lgan vaqtda bajarib beramiz."
+    },
+    "feature_3": {
+      "title": "Mahsulotni brend qilish",
+      "description": "Biz sizning logotipingizni har qanday murakkablikda mahsulotlarga joylashtiramiz, shunda ular yanada eksklyuziv bo'ladi."
+    },
+    "feature_4": {
+      "title": "Mahsulotni brend qilish",
+      "description": "Biz sizning logotipingizni har qanday murakkablikda mahsulotlarga joylashtiramiz, shunda ular yanada eksklyuziv bo'ladi."
+    }
+  }
 }

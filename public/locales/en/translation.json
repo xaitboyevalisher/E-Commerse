@@ -81,5 +81,43 @@
   "companyRequired": "Please enter your company name",
   "phoneRequired": "Please enter your phone number",
   "productRequired": "Please enter product name",
-  "quantityRequired": "Please enter product quantity"
+  "quantityRequired": "Please enter product quantity",
+  "how_we_work": {
+    "title": "How We Work",
+    "step_1": {
+      "alt": "Step 1",
+      "title": "Submit Your Request",
+      "description": "You submit a request on the website or contact us via the phone number provided on the site."
+    },
+    "step_2": {
+      "alt": "Step 2",
+      "title": "Agreement",
+      "description": "We consult you, agree on the price and the exact time of arrival of our specialist."
+    },
+    "step_3": {
+      "alt": "Step 3",
+      "title": "Product Shipping and Installation",
+      "description": "Our lock installation specialist arrives at your location at the agreed time."
+    }
+  },
+  "choose_us": {
+    "title": "Why Choose Us",
+    "alt": "Why Choose Us",
+    "feature_1": {
+      "title": "Double Cost Refund",
+      "description": "For every faulty product sent, we will refund you double the cost."
+    },
+    "feature_2": {
+      "title": "Installation",
+      "description": "We perform installation work of any complexity at a time convenient for you."
+    },
+    "feature_3": {
+      "title": "Product Branding",
+      "description": "We will apply your logo of any complexity to our products to make them more exclusive."
+    },
+    "feature_4": {
+      "title": "Product Branding",
+      "description": "We will apply your logo of any complexity to our products to make them more exclusive."
+    }
+  }
 }
