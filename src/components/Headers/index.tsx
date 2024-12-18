@@ -303,7 +303,9 @@ const Header = ({ isDesktop }: { isDesktop: boolean }) => {
 
           <div className="flex items-center gap-6 mt-4 md:mt-0">
             <div className="flex items-center gap-1 text-lg text-gray-600 hidden md:flex">
-              <FaPhoneAlt style={{ color: "blue" }} />
+              <a href="tel:+79665588499">
+                <FaPhoneAlt style={{ color: "blue" }} />
+              </a>
               <h1 className="mb-0">+7 (966) 55 88 499</h1>
             </div>
 
@@ -320,7 +322,7 @@ const Header = ({ isDesktop }: { isDesktop: boolean }) => {
                 onClick={UserClick}
               >
                 <FaUser className="text-2xl mr-1" />
-                {userName ? <span>{userName}</span> : <span>{t("login")}</span>}
+                {userName ? <span>{userName}</span> : <span>{t("profile")}</span>}
               </div>
             </div>
 
