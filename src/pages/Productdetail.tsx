@@ -79,9 +79,7 @@ const ProductDetails = () => {
 
   return (
     <div className="container mx-auto p-4">
-      {/* Mahsulot rasmi va tafsilotlari */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {/* Rasm va thumbnaillar */}
         <div className="flex flex-col">
           <img
             src={selectedPhoto || lock.photos[0]}
@@ -103,7 +101,6 @@ const ProductDetails = () => {
           </div>
         </div>
 
-        {/* Tafsilotlar */}
         <div>
           <h1 className="text-2xl font-semibold">{lock.name}</h1>
           <div className="flex items-center gap-2 mt-2">
@@ -117,9 +114,7 @@ const ProductDetails = () => {
             <li>Межкомнатную дверь</li>
           </ul>
 
-          {/* Комплектация va Цвет qismlari yonma-yon */}
           <div className="mt-6 flex gap-8 items-start">
-            {/* Komplektatsiya */}
             <div>
               <p className="text-gray-600 mb-2 font-medium">Комплектация</p>
               <Select
@@ -134,7 +129,6 @@ const ProductDetails = () => {
               </Select>
             </div>
 
-            {/* Цвет */}
             <div>
               <p className="text-gray-600 mb-2 font-medium">Цвет</p>
               <div className="flex gap-4">
@@ -184,7 +178,6 @@ const ProductDetails = () => {
         </div>
       </div>
 
-      {/* Tabs va Collapse */}
       <div className="mt-8">
         <Tabs defaultActiveKey="1">
           <TabPane tab="Характеристики" key="1">
