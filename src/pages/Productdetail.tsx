@@ -260,49 +260,71 @@ const ProductDetails = () => {
             ) : commentsError ? (
               <div>Ошибка загрузки комментариев</div>
             ) : (
-              <>
-                {comments?.map((comment, idx) => (
-                  <div key={idx} className="border p-4 mb-2">
-                    <p>
-                      <strong>{comment.name}</strong> — {comment.text}
-                    </p>
-                    <Rate disabled defaultValue={comment.stars} />
-                  </div>
-                ))}
-                <div className="mt-6">
+              <div className="flex flex-wrap">
+                {/* Chap tomondagi sharhlar */}
+                <div className="w-2/3 pr-4">
+                  {comments?.map((comment, idx) => (
+                    <div
+                      key={idx}
+                      className="border border-gray-300 p-4 mb-4 rounded-lg bg-white shadow-md"
+                    >
+                      <div className="flex justify-between items-center mb-2">
+                        <strong className="text-gray-800">
+                          {comment.name}
+                        </strong>
+                        <span className="text-gray-500 text-sm">
+                          20 Августа, 2021
+                        </span>
+                      </div>
+                      <p className="text-gray-700 mb-2">{comment.text}</p>
+                      <Rate disabled defaultValue={comment.stars} />
+                      <div className="mt-2 flex items-center text-gray-500 text-sm">
+                        <span className="cursor-pointer">Ответить</span>
+                        <span className="ml-4">1 комментарий</span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
+                {/* O'ng tomondagi forma */}
+                <div className="w-1/3 pl-4">
                   <h3 className="text-lg font-semibold mb-4">Оставить отзыв</h3>
-                  <input
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                    placeholder="Ваше имя"
-                    className="border p-2 w-full mb-4"
-                  />
-                  <input
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    placeholder="Ваш email"
-                    className="border p-2 w-full mb-4"
-                  />
-                  <textarea
-                    value={text}
-                    onChange={(e) => setText(e.target.value)}
-                    placeholder="Ваш комментарий"
-                    className="border p-2 w-full mb-4"
-                  />
+                  {/* Reyting */}
                   <Rate
                     value={stars}
                     onChange={(value) => setStars(value)}
                     className="mb-4"
                   />
+                  {/* Inputlar */}
+                  <input
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    placeholder="Ваше имя"
+                    className="border border-gray-300 p-2 w-full mb-4 rounded-md focus:ring-2 focus:ring-blue-500 outline-none"
+                  />
+                  <input
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="Ваш Email"
+                    className="border border-gray-300 p-2 w-full mb-4 rounded-md focus:ring-2 focus:ring-blue-500 outline-none"
+                  />
+                  <textarea
+                    value={text}
+                    onChange={(e) => setText(e.target.value)}
+                    placeholder="Ваш комментарий"
+                    rows={4}
+                    className="border border-gray-300 p-2 w-full mb-4 rounded-md focus:ring-2 focus:ring-blue-500 outline-none"
+                  />
                   <Button
                     type="primary"
                     onClick={handleSubmit}
                     loading={commentMutation.isLoading}
+                    className="w-full bg-blue-500 hover:bg-blue-600 text-white font-medium py-2 px-4 rounded-md"
                   >
-                    Отправить
+                    Оставить отзыв
                   </Button>
                 </div>
-              </>
+              </div>
             )}
           </TabPane>
         </Tabs>
