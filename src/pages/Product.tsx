@@ -213,7 +213,7 @@ const ProductPage = () => {
                     )}
 
                     <div className="p-3">
-                      {/* Wrap the product name in a Link component */}
+                      
                       <h3 className="font-semibold text-lg">
                         <Link
                           to={`/product/${product.id}`}

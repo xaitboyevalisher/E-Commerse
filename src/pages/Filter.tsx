@@ -3,6 +3,7 @@ import { IoIosArrowDown } from "react-icons/io";
 import { Slider, Button, Col, Card, Row, Spin, message } from "antd";
 import { FaCheckCircle, FaGift } from "react-icons/fa";
 import { AiOutlineStar } from "react-icons/ai";
+import { Link } from "react-router-dom";
 
 // Types & Interfaces
 interface LockType {
@@ -64,7 +65,12 @@ const FilterPage: React.FC = () => {
   return (
     <div
       className="p-4"
-      style={{ display: "flex", justifyContent: "space-around", gap: "50px", width:"100%" }}
+      style={{
+        display: "flex",
+        justifyContent: "space-around",
+        gap: "50px",
+        width: "100%",
+      }}
     >
       <div className="filters-p" style={{ width: "200px" }}>
         {/* Filter Section */}
@@ -128,10 +134,10 @@ const FilterPage: React.FC = () => {
       </div>
 
       {/* Filtered Products */}
-      <div className="" style={{width:"100%"}}>
+      <div className="" style={{ width: "100%" }}>
         <Row gutter={[16, 16]} className="mt-6" style={{ gap: "20px" }}>
           {loadingProducts ? (
-             <Col xs={24} sm={12} md={8} lg={6} className="flex justify-center">
+            <Col xs={24} sm={12} md={8} lg={6} className="flex justify-center">
               <Spin size="large" />
             </Col>
           ) : (
@@ -167,7 +173,12 @@ const FilterPage: React.FC = () => {
                   )}
 
                   <div className="p-3">
-                    <h3 className="font-semibold text-lg">{product.name}</h3>
+                    <Link
+                      to={`/product/${product.id}`}
+                      className="text-blue-600 hover:underline"
+                    >
+                      {product.name}
+                    </Link>
                     <div className="flex items-center mt-2">
                       {[...Array(5)].map((_, index) => (
                         <AiOutlineStar key={index} className="text-gray-300" />
@@ -195,7 +206,6 @@ const FilterPage: React.FC = () => {
             ))
           )}
         </Row>
-
       </div>
     </div>
   );

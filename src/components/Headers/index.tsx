@@ -132,13 +132,6 @@ const Header = ({ isDesktop }: { isDesktop: boolean }) => {
         <div className="flex justify-center items-center gap-2 w-full">
           <span className="text-sm text-center">{t("promotion")}</span>
         </div>
-
-        <Button
-          type="link"
-          className="text-white hidden md:block text-sm mt-2 md:mt-0"
-        >
-          {t("callback")}
-        </Button>
       </div>
 
       <AntHeader className="bg-white p-4 flex flex-col md:flex-row justify-between items-center shadow-sm w-full">
@@ -306,7 +299,9 @@ const Header = ({ isDesktop }: { isDesktop: boolean }) => {
               <a href="tel:+79665588499">
                 <FaPhoneAlt style={{ color: "blue" }} />
               </a>
-              <h1 className="mb-0">+7 (966) 55 88 499</h1>
+              <p className="text-gray-400">
+                <a href="tel:+375336628256">+7 (966) 55 88 499</a>
+              </p>
             </div>
 
             <div className="flex items-center gap-4">
@@ -322,7 +317,11 @@ const Header = ({ isDesktop }: { isDesktop: boolean }) => {
                 onClick={UserClick}
               >
                 <FaUser className="text-2xl mr-1" />
-                {userName ? <span>{userName}</span> : <span>{t("profile")}</span>}
+                {userName ? (
+                  <span>{userName}</span>
+                ) : (
+                  <span>{t("profile")}</span>
+                )}
               </div>
             </div>
 

@@ -11,7 +11,7 @@ import api from "../api/api";
 import Header from "../components/Headers";
 import Footers from "@src/components/Headers/Footer";
 import { Product, ContactRequest } from "../types";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const { Content } = Layout;
 
@@ -403,7 +403,12 @@ const Home = () => {
                 </div>
 
                 <div className="p-3">
-                  <h3 className="font-semibold text-lg">{product.name}</h3>
+                  <Link
+                    to={`/product/${product.id}`}
+                    className="text-blue-600 hover:underline"
+                  >
+                    {product.name}
+                  </Link>
                   <div className="flex items-center mt-2">
                     {[...Array(5)].map((_, index) => (
                       <AiOutlineStar key={index} className="text-gray-300" />
