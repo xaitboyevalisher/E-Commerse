@@ -1,7 +1,7 @@
-import { Link, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { Button, Select, Tabs, Collapse, Rate, Spin, message } from "antd";
 import { AiOutlineHeart } from "react-icons/ai";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import api from "../api/api";
 import { useState } from "react";
 
@@ -21,7 +21,14 @@ interface Lock {
   photos: string[];
 }
 
-// Backendga mahsulotlarni olish uchun so'rov
+interface Comment {
+  name: string;
+  email: string;
+  text: string;
+  stars: number;
+  createdAt: string;
+}
+
 const Locks = async (): Promise<Lock[]> => {
   const response = await api.get("/lock/get-all-by-filter", {
     params: { page: 0, size: 10 },
@@ -38,15 +45,89 @@ const addToBasket = async (lockId: number) => {
   }
 };
 
-// Mahsulot tafsilotlarini ko'rsatuvchi komponent
+const fetchComments = async (lockId: number): Promise<Comment[]> => {
+  const response = await api.get(`/comment/get-all-by-lock/${lockId}`);
+  return response.data.data;
+};
+
+const addComment = async (newComment: Comment) => {
+  try {
+    const response = await api.post("/comment/add", newComment);
+    return response.data;
+  } catch (error) {
+    throw new Error("Failed to add comment");
+  }
+};
+
 const ProductDetails = () => {
   const { id } = useParams();
+  const queryClient = useQueryClient();
   const [selectedPhoto, setSelectedPhoto] = useState<string | null>(null);
   const [isAddingToBasket, setIsAddingToBasket] = useState(false);
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [text, setText] = useState("");
+  const [stars, setStars] = useState(5);
+
   const { data, isLoading, error } = useQuery({
     queryKey: ["locks"],
     queryFn: Locks,
   });
+
+  const lock = data?.find((lock) => lock.id.toString() === id);
+
+  const {
+    data: comments,
+    isLoading: commentsLoading,
+    error: commentsError,
+  } = useQuery({
+    queryKey: ["comments", lock?.id],
+    queryFn: () => fetchComments(lock?.id || 0),
+    enabled: !!lock?.id,
+  });
+
+  const commentMutation = useMutation({
+    mutationFn: addComment,
+    onSuccess: () => {
+      queryClient.invalidateQueries(["comments", lock?.id]);
+      setName("");
+      setEmail("");
+      setText("");
+      setStars(5);
+      message.success("Отзыв добавлен");
+    },
+    onError: (error: Error) => {
+      message.error("Ошибка при добавлении отзыва: " + error.message);
+    },
+  });
+
+  const handleSubmit = () => {
+    if (!name || !email || !text) {
+      message.error("Заполните все поля");
+      return;
+    }
+
+    commentMutation.mutate({
+      name,
+      email,
+      text,
+      stars,
+      createdAt: new Date().toISOString(),
+    });
+  };
+
+  const handleAddToBasket = async () => {
+    if (!lock) return;
+    setIsAddingToBasket(true);
+    try {
+      await addToBasket(lock.id);
+      message.success("Товар добавлен в корзину");
+    } catch (error) {
+      message.error("Не удалось добавить товар в корзину");
+    } finally {
+      setIsAddingToBasket(false);
+    }
+  };
 
   if (isLoading) {
     return (
@@ -60,22 +141,9 @@ const ProductDetails = () => {
     return <div>Xatolik yuz berdi: {(error as Error).message}</div>;
   }
 
-  const lock = data?.find((lock) => lock.id.toString() === id);
   if (!lock) {
     return <div>Mahsulot tafsilotlari mavjud emas.</div>;
   }
-
-  const handleAddToBasket = async () => {
-    setIsAddingToBasket(true);
-    try {
-      await addToBasket(lock.id);
-      message.success("Товар добавлен в корзину");
-    } catch (error) {
-      message.error("Не удалось добавить товар в корзину");
-    } finally {
-      setIsAddingToBasket(false);
-    }
-  };
 
   return (
     <div className="container mx-auto p-4">
@@ -187,7 +255,55 @@ const ProductDetails = () => {
             <p>{lock.description || "Описание отсутствует"}</p>
           </TabPane>
           <TabPane tab="Отзывы" key="3">
-            <p>Отзывы покупателей...</p>
+            {commentsLoading ? (
+              <Spin />
+            ) : commentsError ? (
+              <div>Ошибка загрузки комментариев</div>
+            ) : (
+              <>
+                {comments?.map((comment, idx) => (
+                  <div key={idx} className="border p-4 mb-2">
+                    <p>
+                      <strong>{comment.name}</strong> — {comment.text}
+                    </p>
+                    <Rate disabled defaultValue={comment.stars} />
+                  </div>
+                ))}
+                <div className="mt-6">
+                  <h3 className="text-lg font-semibold mb-4">Оставить отзыв</h3>
+                  <input
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    placeholder="Ваше имя"
+                    className="border p-2 w-full mb-4"
+                  />
+                  <input
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="Ваш email"
+                    className="border p-2 w-full mb-4"
+                  />
+                  <textarea
+                    value={text}
+                    onChange={(e) => setText(e.target.value)}
+                    placeholder="Ваш комментарий"
+                    className="border p-2 w-full mb-4"
+                  />
+                  <Rate
+                    value={stars}
+                    onChange={(value) => setStars(value)}
+                    className="mb-4"
+                  />
+                  <Button
+                    type="primary"
+                    onClick={handleSubmit}
+                    loading={commentMutation.isLoading}
+                  >
+                    Отправить
+                  </Button>
+                </div>
+              </>
+            )}
           </TabPane>
         </Tabs>
       </div>
