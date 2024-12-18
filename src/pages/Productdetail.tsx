@@ -1,8 +1,9 @@
 import { Link, useParams } from "react-router-dom";
-import { Button, Select, Tabs, Collapse, Rate, Spin } from "antd";
+import { Button, Select, Tabs, Collapse, Rate, Spin, message } from "antd";
 import { AiOutlineHeart } from "react-icons/ai";
-import { useQuery, useMutation } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import api from "../api/api";
+import { useState } from "react";
 
 const { Option } = Select;
 const { TabPane } = Tabs;
@@ -20,6 +21,7 @@ interface Lock {
   photos: string[];
 }
 
+// Backendga mahsulotlarni olish uchun so'rov
 const Locks = async (): Promise<Lock[]> => {
   const response = await api.get("/lock/get-all-by-filter", {
     params: {
@@ -31,23 +33,24 @@ const Locks = async (): Promise<Lock[]> => {
 };
 
 const addToBasket = async (lockId: number) => {
-  const response = await api.post(
-    "/basket/add",
-    { lockId },
-    { headers: { "Accept-Language": "UZ" } }
-  );
-  return response.data;
+  try {
+    const response = await api.post("/api/v1/basket/add", {
+      lockId,
+    });
+    return response.data;
+  } catch (error) {
+    throw new Error("Failed to add item to basket");
+  }
 };
 
+// Mahsulot tafsilotlarini ko'rsatuvchi komponent
 const ProductDetails = () => {
-  const { id } = useParams();
+  const { id } = useParams(); // URL'dan id olish
+  const [isAddingToBasket, setIsAddingToBasket] = useState(false);
   const { data, isLoading, error } = useQuery({
     queryKey: ["locks"],
     queryFn: Locks,
   });
-
-  const { mutate: addToCart, isLoading: isAddingToCart } =
-    useMutation(addToBasket);
 
   if (isLoading) {
     return (
@@ -57,19 +60,31 @@ const ProductDetails = () => {
     );
   }
 
+  // Xatolik yuzaga kelsa
   if (error) {
     return <div>Xatolik yuz berdi: {(error as Error).message}</div>;
   }
 
-  const lock = data?.find((lock) => lock.id.toString() === id);
+  // Backenddan olingan mahsulotlar ro'yxati
+  const lock = data?.find((lock) => lock.id.toString() === id); // `id` bo'yicha tegishli mahsulotni olish
 
+  // Agar mahsulot topilmasa
   if (!lock) {
     return <div>Mahsulot tafsilotlari mavjud emas.</div>;
   }
 
-  const handleAddToCart = () => {
-    if (lock) {
-      addToCart(lock.id);
+  const handleAddToBasket = async () => {
+    const lock = data?.find((lock) => lock.id.toString() === id); // `id` bo'yicha tegishli mahsulotni olish
+    if (!lock) return;
+
+    setIsAddingToBasket(true);
+    try {
+      await addToBasket(lock.id);
+      message.success("Товар добавлен в корзину");
+    } catch (error) {
+      message.error("Не удалось добавить товар в корзину");
+    } finally {
+      setIsAddingToBasket(false);
     }
   };
 
@@ -99,6 +114,7 @@ const ProductDetails = () => {
         </div>
 
         <div>
+          {/* Mahsulot nomi */}
           <h1 className="text-2xl font-semibold">
             <Link
               to={`/product/${lock.id}`}
@@ -148,8 +164,8 @@ const ProductDetails = () => {
               <Button
                 type="primary"
                 className="bg-blue-500 px-6"
-                onClick={handleAddToCart} // "Köpít" tugmasi bosilganda savatga qo'shish
-                loading={isAddingToCart} // API so'rovi yuborilayotganini ko'rsatish
+                onClick={handleAddToBasket}
+                loading={isAddingToBasket}
               >
                 Купить
               </Button>

@@ -48,17 +48,17 @@ const Header = ({ isDesktop }: { isDesktop: boolean }) => {
     },
   ]);
 
-  const handleQuantityChange = (id: number, quantity: number) => {
+  const QuantityChange = (id: number, quantity: number) => {
     setCartItems((prev) =>
       prev.map((item) => (item.id === id ? { ...item, quantity } : item))
     );
   };
 
-  const handleRemove = (id: number) => {
+  const Remove = (id: number) => {
     setCartItems((prev) => prev.filter((item) => item.id !== id));
   };
 
-  const handleAddToCart = (item: Omit<CartItem, "quantity">) => {
+  const AddToCart = (item: Omit<CartItem, "quantity">) => {
     setCartItems((prev) => {
       const existingItem = prev.find((cartItem) => cartItem.id === item.id);
       if (existingItem) {
@@ -107,7 +107,7 @@ const Header = ({ isDesktop }: { isDesktop: boolean }) => {
     </Menu>
   );
 
-  const handleUserClick = () => {
+  const UserClick = () => {
     const token = localStorage.getItem("access_token");
     if (!token) {
       navigate("/login");
@@ -116,13 +116,11 @@ const Header = ({ isDesktop }: { isDesktop: boolean }) => {
     }
   };
 
-  // Open cart modal
   const showCartModal = () => {
     setIsModalVisible(true);
   };
 
-  // Close cart modal
-  const handleCloseModal = () => {
+  const CloseModal = () => {
     setIsModalVisible(false);
   };
 
@@ -182,25 +180,33 @@ const Header = ({ isDesktop }: { isDesktop: boolean }) => {
                           <Menu.Item key="22">
                             <Link to="/product">{t("catalogItem2")}</Link>
                           </Menu.Item>
+                          <Menu.Item key="23" className="text-gray-700">
+                            <Link to="/product">{t("catalogItem3")}</Link>
+                          </Menu.Item>
+                          <Menu.Item key="24" className="text-gray-700">
+                            <Link to="/product">{t("catalogItem4")}</Link>
+                          </Menu.Item>
+                          <Menu.Item key="25" className="text-gray-700">
+                            <Link to="/product">{t("catalogItem5")}</Link>
+                          </Menu.Item>
+                          <Menu.Item key="26" className="text-gray-700">
+                            <Link to="/product">{t("catalogItem6")}</Link>
+                          </Menu.Item>
+                          <Menu.Item key="27" className="text-gray-700">
+                            <Link to="/product">{t("catalogItem7")}</Link>
+                          </Menu.Item>
+                          <Menu.Item key="28" className="text-gray-700">
+                            <Link to="/product">{t("catalogItem8")}</Link>
+                          </Menu.Item>
+
                           <Menu.Item key="29">
-                            <Link
-                              to="/Katalog/Category"
-                              onClick={() => {
-                                setTimeout(() => {
-                                  const categorySection =
-                                    document.getElementById("category-section");
-                                  if (categorySection) {
-                                    categorySection.scrollIntoView({
-                                      behavior: "smooth",
-                                    });
-                                  }
-                                }, 100);
-                              }}
+                            <Button
+                              type="primary"
+                              className="w-full"
+                              onClick={() => navigate("/Katalog/Category")}
                             >
-                              <Button type="primary" className="w-full">
-                                {t("viewAll")}
-                              </Button>
-                            </Link>
+                              {t("viewAll")}
+                            </Button>
                           </Menu.Item>
                         </div>
                       )}
@@ -266,24 +272,14 @@ const Header = ({ isDesktop }: { isDesktop: boolean }) => {
                           <Link to="/product">{t("catalogItem8")}</Link>
                         </Menu.Item>
                         <Menu.Item
-                          key="28"
-                          className="text-white bg-blue-500 px-4 py-2 rounded-md flex text-center"
+                          key="29"
+                          onClick={() => navigate("/Katalog/Category")}
                           style={{
-                            backgroundColor: "#1D4ED8",
-                            cursor: "pointer",
+                            backgroundColor: "blue",
+                            color: "white",
                           }}
                         >
-                          <Link
-                            to="/Katalog/Category"
-                            style={{
-                              color: "white",
-                              textDecoration: "none",
-                              textAlign: "center",
-                              width: "100%",
-                            }}
-                          >
-                            Смотреть все
-                          </Link>
+                          {t("viewAll")}
                         </Menu.Item>
                       </div>
 
@@ -321,7 +317,7 @@ const Header = ({ isDesktop }: { isDesktop: boolean }) => {
               </Badge>
               <div
                 className="flex items-center cursor-pointer"
-                onClick={handleUserClick}
+                onClick={UserClick}
               >
                 <FaUser className="text-2xl mr-1" />
                 {userName ? <span>{userName}</span> : <span>{t("login")}</span>}
@@ -345,7 +341,7 @@ const Header = ({ isDesktop }: { isDesktop: boolean }) => {
       <Modal
         title="Корзина"
         open={isModalVisible}
-        onCancel={handleCloseModal}
+        onCancel={CloseModal}
         footer={null}
         width={600}
       >
@@ -379,9 +375,7 @@ const Header = ({ isDesktop }: { isDesktop: boolean }) => {
                   <InputNumber
                     min={1}
                     value={item.quantity}
-                    onChange={(value) =>
-                      handleQuantityChange(item.id, value || 1)
-                    }
+                    onChange={(value) => QuantityChange(item.id, value || 1)}
                     className="mr-4"
                   />
                   <Text strong>{item.price * item.quantity}₽</Text>
@@ -390,7 +384,7 @@ const Header = ({ isDesktop }: { isDesktop: boolean }) => {
                   type="text"
                   danger
                   icon={<FiTrash />}
-                  onClick={() => handleRemove(item.id)}
+                  onClick={() => Remove(item.id)}
                 />
               </div>
             </List.Item>
@@ -433,7 +427,7 @@ const Header = ({ isDesktop }: { isDesktop: boolean }) => {
                 <Button
                   type="link"
                   icon={<FiPlus />}
-                  onClick={() => handleAddToCart(item)}
+                  onClick={() => AddToCart(item)}
                 />
               </List.Item>
             )}
