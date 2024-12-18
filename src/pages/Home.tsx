@@ -11,7 +11,6 @@ import api from "../api/api";
 import Header from "../components/Headers";
 import Footers from "@src/components/Headers/Footer";
 import { Service, Category, Product, ContactRequest } from "../types";
-
 const { Content } = Layout;
 
 const InputContainer = styled.div`
@@ -346,8 +345,8 @@ const Home = () => {
                 cover={
                   product.photos?.[0] ? (
                     <img
-                      alt={product.name}                     
-                      src={product.photos[0]} 
+                      alt={product.name}
+                      src={product.photos[0]}
                       className="h-48 w-full object-cover"
                     />
                   ) : (
