@@ -410,9 +410,46 @@ const Wholesale = () => {
         dots={false}
         afterChange={AfterChange}
       >
-        {[1, 2, 3].map((slide) => (
+        {[
+          {
+            image:
+              "https://th.bing.com/th/id/OIP.lsoycdmk7c3OHemDY8OhHwHaE7?rs=1&pid=ImgDetMain",
+            logo: "http://images.harmony.epsilon.com/ContentHandler/images?id=5739f894-a101-453f-8c0e-372c120a9af8",
+            projectTitle: "Проект для гостиницы Radisson Hotels",
+            tasks: [
+              "Установлено 123 Вариативных замка Golden Soft для отеля",
+              "Было нанесено личный брендинг на все замки",
+              "Были проведены монтажные работы, также была произведена помощь в подключении замков к системе",
+            ],
+            budget: "$5000",
+          },
+          {
+            image:
+              "https://media-cdn.tripadvisor.com/media/photo-s/16/0d/5c/70/exterior.jpg",
+            logo: "http://images.harmony.epsilon.com/ContentHandler/images?id=5c904b7b-4ea2-4ad5-86da-be59569d9e5b",
+            projectTitle: "Проект для гостиницы Marriott Hotels",
+            tasks: [
+              "Установлено 200 Вариативных замков для Marriott",
+              "Брендинг на всех замках выполнен",
+              "Подключение замков в систему отеля завершено",
+            ],
+            budget: "$7000",
+          },
+          {
+            image:
+              "https://th.bing.com/th/id/OIP.b0jM50yC8yrZl5OIEyrgiwHaDv?rs=1&pid=ImgDetMain",
+            logo: "http://images.harmony.epsilon.com/ContentHandler/images?id=20a8b417-59f8-402a-9bf2-c6dc9004395e",
+            projectTitle: "Проект для гостиницы Hilton",
+            tasks: [
+              "Установлено 150 замков Hilton",
+              "Брендирование замков прошло успешно",
+              "Монтаж и подключение замков завершено",
+            ],
+            budget: "$6000",
+          },
+        ].map((slide, index) => (
           <div
-            key={slide}
+            key={index}
             className="border border-gray-200 rounded-lg shadow-lg bg-white p-6"
           >
             <Row gutter={[16, 16]} align="middle">
@@ -422,8 +459,8 @@ const Wholesale = () => {
                 className="flex justify-center md:justify-start"
               >
                 <Image
-                  src="/Image.png"
-                  alt="Radisson Hotel"
+                  src={slide.image}
+                  alt={slide.projectTitle}
                   className="rounded-lg shadow-md"
                 />
               </Col>
@@ -432,38 +469,30 @@ const Wholesale = () => {
                 <div className="flex flex-col justify-start space-y-4">
                   <div className="flex flex-col items-center md:items-start mb-4">
                     <Image
-                      src="/radisson-dark 1.png"
-                      alt="Radisson Hotels"
+                      src={slide.logo}
+                      alt={slide.projectTitle}
                       className="w-32 h-auto"
                       width={128}
                       height={32}
                     />
                     <h3 className="text-xl font-semibold text-center md:text-left mt-4">
-                      Проект для гостиницы Radisson Hotels
+                      {slide.projectTitle}
                     </h3>
                   </div>
 
                   <Row className="space-y-4">
-                    <Col span={24}>
-                      <Checkbox defaultChecked className="mr-4">
-                        Установлено 123 Вариативных замка Golden Soft для отеля
-                      </Checkbox>
-                    </Col>
-                    <Col span={24}>
-                      <Checkbox defaultChecked className="mr-4">
-                        Было нанесено личный брендинг на все замки
-                      </Checkbox>
-                    </Col>
-                    <Col span={24}>
-                      <Checkbox defaultChecked className="mr-4">
-                        Были проведены монтажные работы, также была произведена
-                        помощь в подключении замков к системе
-                      </Checkbox>
-                    </Col>
+                    {slide.tasks.map((task, taskIndex) => (
+                      <Col span={24} key={taskIndex}>
+                        <Checkbox defaultChecked className="mr-4">
+                          {task}
+                        </Checkbox>
+                      </Col>
+                    ))}
                   </Row>
 
                   <p className="text-lg font-semibold text-gray-800 mt-4 text-center md:text-left">
-                    Бюджет - <span className="text-blue-500">$5000</span>
+                    Бюджет -{" "}
+                    <span className="text-blue-500">{slide.budget}</span>
                   </p>
                 </div>
               </Col>

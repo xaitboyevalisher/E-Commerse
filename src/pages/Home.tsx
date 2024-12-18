@@ -63,7 +63,6 @@ const Home = () => {
     }
   );
   console.log(popularProducts, "popup");
-  const carouselRef = useRef<any>(null);
   const [currentSlide, setCurrentSlide] = useState(0);
 
   const AfterChange = (current: number) => {
@@ -111,19 +110,23 @@ const Home = () => {
     navigate("/Katalog/Category");
   };
 
+  const displayedProducts = popularProducts.slice(0, 3);
+
+  const carouselRef = useRef<any>(null);
+
   return (
     <Layout>
       <Header isDesktop={isDesktop} />
       <Content className="mt-8 flex justify-center items-center bg-[#F7F7F7]">
         <div className="w-full max-w-screen-lg px-4">
           <Carousel
-            autoplay
             ref={carouselRef}
+            autoplay
             dots={false}
-            afterChange={AfterChange}
+            afterChange={(current) => setCurrentSlide(current)} // Slayd o'zgarganda `currentSlide` yangilanadi
           >
-            {[1, 2, 3].map((slide) => (
-              <div key={slide}>
+            {displayedProducts.map((product) => (
+              <div key={product.id}>
                 <Row
                   gutter={[16, 16]}
                   className="flex flex-col md:flex-row items-center"
@@ -134,8 +137,8 @@ const Home = () => {
                     className="flex justify-center md:justify-end"
                   >
                     <img
-                      src={"/Rectangle 751.png"}
-                      alt={`product-${slide}`}
+                      src={product.photos[0]} // Birinchi foto tasvir
+                      alt={product.name}
                       style={{ maxWidth: "400px", backgroundColor: "white" }}
                     />
                   </Col>
@@ -145,37 +148,34 @@ const Home = () => {
                     className="flex flex-col justify-center pl-4 md:pl-8"
                   >
                     <h1 className="text-3xl font-bold max-w-[400px]">
-                      {i18n.t("productTitle")}
+                      {product.name}
                     </h1>
-                    <h2 className="text-2xl font-semibold mt-1">
-                      {i18n.t("productSubtitle")}
-                    </h2>
                     <p className="text-gray-600 mt-4 max-w-[265px] hidden md:block">
-                      {i18n.t("productDescription1")}
-                    </p>
-                    <p className="text-gray-600 mt-4 max-w-[245px] hidden md:block">
-                      {i18n.t("productDescription2")}
+                      {product.description}
                     </p>
                     <div className="flex items-center mt-4">
                       <div className="text-3xl font-semibold text-blue-600">
-                        {i18n.t("productPriceCurrent")}
+                        {product.newPrice} ₽
                       </div>
-                      <div className="text-gray-400 line-through ml-4">
-                        {i18n.t("productPriceOld")}
-                      </div>
+                      {product.price !== product.newPrice && (
+                        <div className="text-gray-400 line-through ml-4">
+                          {product.price} ₽
+                        </div>
+                      )}
                     </div>
                     <Button
                       type="primary"
                       className="mt-4"
                       style={{ width: "200px" }}
                     >
-                      {i18n.t("addToCart")}
+                      Add to Cart
                     </Button>
                   </Col>
                 </Row>
               </div>
             ))}
           </Carousel>
+
           <div className="flex justify-center items-center mt-8 space-x-4">
             <Button
               shape="circle"
@@ -183,10 +183,10 @@ const Home = () => {
                 <BiChevronLeft style={{ fontSize: "24px", color: "#333" }} />
               }
               style={{ border: "none", background: "transparent" }}
-              onClick={() => carouselRef.current?.prev()}
+              onClick={() => carouselRef.current?.prev()} // Oldingi slayd
             />
             <div className="flex items-center space-x-2">
-              {[...Array(3)].map((_, index) => (
+              {[...Array(displayedProducts.length)].map((_, index) => (
                 <span
                   key={index}
                   className={`h-2 w-2 rounded-full ${
