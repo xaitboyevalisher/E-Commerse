@@ -237,70 +237,58 @@ const Wholesale = () => {
       <Header isDesktop={isDesktop} />
       <div css={formContainerStyle}>
         <div css={textStyle}>
-          <h2>Оформите заявку и мы вам перезвоним</h2>
-          <p>
-            Vitae, urna, massa dictumst morbi ut id dui nulla. Purus a velit sem
-            viverra. Nunc ac quis donec nunc eu blandit ante nibh. Sit felis
-            nulla donec mauris quis nulla velit.
-          </p>
+          <h2>{t("formTitle")}</h2>
+          <p>{t("formDescription")}</p>
         </div>
         <div css={formStyle}>
           <Form layout="vertical" onFinish={handleSubmit}>
-            <h3 className="text-lg font-semibold mb-4">Оформление заявки</h3>
+            <h3>{t("applicationForm")}</h3>
             <Row gutter={[16, 16]}>
               <Col xs={24} sm={12} md={8}>
                 <Form.Item
-                  label="Имя"
+                  label={t("name")}
                   name="name"
-                  rules={[{ required: true, message: "Введите ваше имя" }]}
+                  rules={[{ required: true, message: t("nameRequired") }]}
                 >
-                  <Input placeholder="Ваше имя" />
+                  <Input placeholder={t("name")} />
                 </Form.Item>
               </Col>
               <Col xs={24} sm={12} md={8}>
                 <Form.Item
-                  label="Название компании"
+                  label={t("company")}
                   name="company"
-                  rules={[
-                    { required: true, message: "Введите название компании" },
-                  ]}
+                  rules={[{ required: true, message: t("companyRequired") }]}
                 >
-                  <Input placeholder="Имя вашей компании" />
+                  <Input placeholder={t("company")} />
                 </Form.Item>
               </Col>
               <Col xs={24} sm={12} md={8}>
                 <Form.Item
-                  label="Номер телефона"
+                  label={t("phone")}
                   name="phone"
-                  rules={[
-                    { required: true, message: "Введите номер телефона" },
-                  ]}
+                  rules={[{ required: true, message: t("phoneRequired") }]}
                 >
-                  <Input placeholder="+7 ( _ _ _ ) _ _ _ - _ _ - _ _" />
+                  <Input placeholder={t("phone")} />
                 </Form.Item>
               </Col>
             </Row>
             <Row gutter={[16, 16]}>
               <Col xs={24} sm={12} md={12}>
                 <Form.Item
-                  label="Название товара"
+                  label={t("product")}
                   name="product"
-                  rules={[
-                    { required: true, message: "Введите название товара" },
-                  ]}
+                  rules={[{ required: true, message: t("productRequired") }]}
                 >
-                  <Input placeholder="Введите название или артикул товара" />
+                  <Input placeholder={t("product")} />
                 </Form.Item>
               </Col>
               <Col xs={24} sm={12} md={12}>
                 <Form.Item
-                  label="Количество"
+                  label={t("quantity")}
                   name="quantity"
-                  rules={[
-                    { required: true, message: "Введите количество товара" },
-                  ]}
+                  rules={[{ required: true, message: t("quantityRequired") }]}
                 >
-                  <Input placeholder="Количество товара" />
+                  <Input placeholder={t("quantity")} />
                 </Form.Item>
               </Col>
             </Row>
@@ -308,21 +296,17 @@ const Wholesale = () => {
               <Checkbox.Group>
                 <Row>
                   <Col span={24}>
-                    <Checkbox value="logo">
-                      Нанесение персонального логотипа (бесплатно)
-                    </Checkbox>
+                    <Checkbox value="logo">{t("logoOption")}</Checkbox>
                   </Col>
                   <Col span={24}>
-                    <Checkbox value="help">
-                      Помощь в монтажных работах (бесплатно)
-                    </Checkbox>
+                    <Checkbox value="help">{t("helpOption")}</Checkbox>
                   </Col>
                 </Row>
               </Checkbox.Group>
             </Form.Item>
             <Form.Item>
               <Button type="primary" htmlType="submit" className="w-full">
-                Отправить заявку
+                {t("submitApplication")}
               </Button>
             </Form.Item>
           </Form>

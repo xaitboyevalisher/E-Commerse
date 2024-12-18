@@ -174,8 +174,7 @@ const ProductPage = () => {
           </div>
 
           <Row gutter={8}>
-          <FilterComponent />
-
+            <FilterComponent />
           </Row>
           <div className="mt-8">
             <h2 className="text-xl font-semibold mb-4 mx-auto px-4">
@@ -214,7 +213,15 @@ const ProductPage = () => {
                     )}
 
                     <div className="p-3">
-                      <h3 className="font-semibold text-lg">{product.name}</h3>
+                      {/* Wrap the product name in a Link component */}
+                      <h3 className="font-semibold text-lg">
+                        <Link
+                          to={`/product/${product.id}`}
+                          className="text-blue-600 hover:underline"
+                        >
+                          {product.name}
+                        </Link>
+                      </h3>
                       <div className="flex items-center mt-2">
                         {[...Array(5)].map((_, index) => (
                           <AiOutlineStar

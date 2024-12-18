@@ -66,57 +66,20 @@
   "deliveryPayment": "Delivery and payment",
   "guarantees": "Guarantees",
   "returns": "Product returns",
-  "formTitle": "Submit a Request and We Will Call You Back",
+  "formTitle": "Fill out the application and we will call you back",
   "formDescription": "Vitae, urna, massa dictumst morbi ut id dui nulla. Purus a velit sem viverra. Nunc ac quis donec nunc eu blandit ante nibh. Sit felis nulla donec mauris quis nulla velit.",
-  "formFields": {
-    "name": "Your Name",
-    "company": "Your Company Name",
-    "phone": "Phone Number",
-    "product": "Product Name",
-    "quantity": "Quantity"
-  },
-  "serviceOptions": {
-    "logo": "Personal Logo Application (Free)",
-    "help": "Assistance in Installation (Free)"
-  },
-  "submitButton": "Submit Request",
-  "howWeWorkTitle": "How We Work",
-  "steps": [
-    {
-      "title": "Request Submission",
-      "description": "You leave a request on the website or contact us by phone."
-    },
-    {
-      "title": "Agreement",
-      "description": "We consult you, agree on the price, and arrange the exact time for our specialist to arrive."
-    },
-    {
-      "title": "Product Delivery and Installation",
-      "description": "Our lock installation specialist arrives at the agreed time and location."
-    }
-  ],
-  "whyChooseUsTitle": "Why Choose Us",
-  "features": [
-    {
-      "title": "Double Cost Return",
-      "description": "For every defective product sent, we will return double the cost."
-    },
-    {
-      "title": "Installation",
-      "description": "We carry out installation work of any complexity at a convenient time for you."
-    },
-    {
-      "title": "Product Branding",
-      "description": "We apply your logo to our products to make them more exclusive."
-    }
-  ],
-  "carouselProjectTitle": "Radisson Hotels Project",
-  "carouselDetails": {
-    "step1": "123 Variants of Golden Soft Locks Installed at the Hotel",
-    "step2": "Personal Branding Applied to All Locks",
-    "step3": "Installation and Assistance with System Connection Completed"
-  },
-  "carouselBudget": "Budget - $5000",
-  "questionsTitle": "Do You Have Any Questions?",
-  "questionsDescription": "If you have any questions, feel free to reach out. We are happy to assist you!"
+  "applicationForm": "Application Form",
+  "name": "Name",
+  "company": "Company Name",
+  "phone": "Phone Number",
+  "product": "Product Name",
+  "quantity": "Quantity",
+  "logoOption": "Apply personal logo (free)",
+  "helpOption": "Help with installation works (free)",
+  "submitApplication": "Submit Application",
+  "nameRequired": "Please enter your name",
+  "companyRequired": "Please enter your company name",
+  "phoneRequired": "Please enter your phone number",
+  "productRequired": "Please enter product name",
+  "quantityRequired": "Please enter product quantity"
 }

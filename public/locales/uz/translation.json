@@ -61,57 +61,20 @@
   "deliveryPayment": "Yetkazib berish va to'lov",
   "guarantees": "Kafolatlar",
   "returns": "Mahsulotni qaytarish",
-  "formTitle": "Arizani rasmiylashtiring va biz sizni qayta qo'ng'iroq qilamiz",
+  "formTitle": "Arizani to'ldiring va biz sizga qo'ng'iroq qilamiz",
   "formDescription": "Vitae, urna, massa dictumst morbi ut id dui nulla. Purus a velit sem viverra. Nunc ac quis donec nunc eu blandit ante nibh. Sit felis nulla donec mauris quis nulla velit.",
-  "formFields": {
-    "name": "Ismingiz",
-    "company": "Kompaniyangiz nomi",
-    "phone": "Telefon raqami",
-    "product": "Mahsulot nomi",
-    "quantity": "Miqdor"
-  },
-  "serviceOptions": {
-    "logo": "Shaxsiy logotipni qo'llash (Bepul)",
-    "help": "O'rnatish ishlari bo'yicha yordam (Bepul)"
-  },
-  "submitButton": "Arizani yuborish",
-  "howWeWorkTitle": "Qanday ishlaymiz",
-  "steps": [
-    {
-      "title": "Ariza yuborish",
-      "description": "Siz veb-saytda ariza qoldirasiz yoki telefon orqali biz bilan bog'lanasiz."
-    },
-    {
-      "title": "Kelishuv",
-      "description": "Biz sizni maslahatlashamiz, narxni va mutaxassisimiz kelish vaqtini aniq belgilaymiz."
-    },
-    {
-      "title": "Mahsulotni yetkazib berish va o'rnatish",
-      "description": "Bizning mutaxassisimiz siz belgilagan vaqtda va joyda kelib, o'rnatish ishlarini bajaradi."
-    }
-  ],
-  "whyChooseUsTitle": "Nima uchun bizni tanlash kerak",
-  "features": [
-    {
-      "title": "Ikki baravar pulni qaytarish",
-      "description": "Har qanday nuqsonli mahsulot uchun ikki baravar pulni qaytaramiz."
-    },
-    {
-      "title": "O'rnatish",
-      "description": "Biz har qanday murakkablikdagi o'rnatish ishlarini vaqti-vaqti bilan bajarib beramiz."
-    },
-    {
-      "title": "Mahsulotni brendlash",
-      "description": "Biz mahsulotingizga logotipingizni qo'llaymiz, shunda u yanada eksklyuziv bo'ladi."
-    }
-  ],
-  "carouselProjectTitle": "Radisson Hotels loyihasi",
-  "carouselDetails": {
-    "step1": "123 ta Golden Soft o'zgaruvchan qulflar Radisson uchun o'rnatildi",
-    "step2": "Barcha qulflarga shaxsiy brend qo'yildi",
-    "step3": "O'rnatish va tizimga ulashish ishlari bajarildi"
-  },
-  "carouselBudget": "Byudjet - $5000",
-  "questionsTitle": "Savollaringiz bormi?",
-  "questionsDescription": "Agar savollaringiz bo'lsa, bemalol murojaat qiling. Biz sizga yordam berishdan xursand bo'lamiz!"
+  "applicationForm": "Ariza shaklini to'ldirish",
+  "name": "Ism",
+  "company": "Kompaniya nomi",
+  "phone": "Telefon raqami",
+  "product": "Mahsulot nomi",
+  "quantity": "Soni",
+  "logoOption": "Shaxsiy logotipni qo'llash (bepul)",
+  "helpOption": "O'rnatish ishlari bo'yicha yordam (bepul)",
+  "submitApplication": "Arizani yuborish",
+  "nameRequired": "Ismingizni kiriting",
+  "companyRequired": "Kompaniya nomini kiriting",
+  "phoneRequired": "Telefon raqamingizni kiriting",
+  "productRequired": "Mahsulot nomini kiriting",
+  "quantityRequired": "Mahsulot sonini kiriting"
 }
