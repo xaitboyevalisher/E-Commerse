@@ -17,17 +17,16 @@ interface Category {
 const Categories = () => {
   const [isDesktop, setIsDesktop] = useState(window.innerWidth >= 774);
   const [visibleCount, setVisibleCount] = useState(8);
-  const { t, i18n } = useTranslation(); // i18n langni olish
+  const { t, i18n } = useTranslation();
 
-  // Tilga bog'liq ravishda kategoriya nomlarini olish
   const { data: categories = [], isLoading: categoriesLoading } = useQuery<
     Category[]
   >(
-    ["categories", i18n.language], // Tilni o'zgartirishda qayta so'rov yuboriladi
+    ["categories", i18n.language],
     async () => {
       const response = await api.get("/category/get-all", {
         params: { page: 0, size: 10 },
-        headers: { "Accept-Language": i18n.language }, // Tilni so'rovga qo'shamiz
+        headers: { "Accept-Language": i18n.language },
       });
       return response.data.data;
     },
@@ -97,7 +96,7 @@ const Categories = () => {
                     }}
                   >
                     <img
-                      src={category.photoPath} 
+                      src={category.photoPath}
                       alt={category.name}
                       style={{
                         width: "100%",

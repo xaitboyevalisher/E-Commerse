@@ -333,7 +333,7 @@ const Wholesale = () => {
         <Title level={2}>Как мы работаем</Title>
         <div css={cardsContainer}>
           <Card>
-            <img src="/path/to/image1.png" alt="Step 1" />
+            <img src="/Shape.png" alt="Step 1" />
             <Title level={3}>Оформление заявки</Title>
             <Paragraph className="min-w-[370px]">
               Вы оставляете заявку на сайте или связываетесь с нами по
@@ -341,7 +341,7 @@ const Wholesale = () => {
             </Paragraph>
           </Card>
           <Card>
-            <img src="/path/to/image2.png" alt="Step 2" />
+            <img src="/Shape (1).png" alt="Step 2" />
             <Title level={3}>Согласование</Title>
             <Paragraph className="min-w-[350px]">
               Мы консультируем Вас, согласовываем стоимость и точное время
@@ -349,7 +349,7 @@ const Wholesale = () => {
             </Paragraph>
           </Card>
           <Card>
-            <img src="/path/to/image3.png" alt="Step 3" />
+            <img src="/Shape (2).png" alt="Step 3" />
             <Title level={3}>Отправка товара и установка</Title>
             <Paragraph className="min-w-[350px]">
               Наш специалист по монтажу замков выезжает к Вам в точно зазначеное
