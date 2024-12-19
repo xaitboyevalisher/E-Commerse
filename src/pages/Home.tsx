@@ -53,11 +53,11 @@ const Home = () => {
   );
 
   const { data: popularProducts = [] } = useQuery<Product[]>(
-    ["products"],
+    ["products", i18n.language],
     async () => {
       const response = await api.get(`/lock/get-all-by-filter`, {
         params: { page: 0, size: 10 },
-        headers: { "Accept-Language": language },
+        headers: { "Accept-Language": i18n.language },
       });
       return response.data.data;
     }

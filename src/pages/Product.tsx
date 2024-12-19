@@ -60,7 +60,7 @@ const ProductPage = () => {
     return useQuery<Product[]>({
       queryKey: ["products", i18n.language],
       queryFn: async () => {
-        const response = await api.get(`/lock/get-all-by-filter`, {
+        const response = await api.get(`/api/v1/lock/get-all-by-filter`, {
           params: { startPrice: 0, page: 0, size: 10 },
           headers: { "Accept-Language": i18n.language },
         });
@@ -96,7 +96,7 @@ const ProductPage = () => {
     const contactData = { name, email };
 
     try {
-      await api.post("/contact/add", contactData);
+      await api.post("/api/v1/contact/add", contactData);
 
       localStorage.setItem(
         "contactSuccessMessage",

@@ -119,5 +119,11 @@
       "description": "We will apply your logo of any complexity to our products to make them more exclusive."
     }
   },
-  "goTo": "Go to"
+  "goTo": "Go to",
+  "feature1_title": "Double Value Return",
+  "feature1_desc": "For each product sent that turns out to be defective, we will return you double the value.",
+  "feature2_title": "Installation",
+  "feature2_desc": "We carry out installation work of any complexity at any convenient time for you.",
+  "feature3_title": "Product Branding",
+  "feature3_desc": "We will apply your logo of any complexity to our products to add exclusivity."
 }

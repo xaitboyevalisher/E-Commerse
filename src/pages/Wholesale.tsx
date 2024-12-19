@@ -354,11 +354,8 @@ const Wholesale = () => {
                 <img src="/product-return 1 (2).png" alt="" />
               </div>
               <div>
-                <p className="feature-title">Возврат удвоенной стоимости</p>
-                <p className="min-w-[390px]">
-                  За каждый отправленный товар который окажется бракованным, мы
-                  вернем вам двойную стоимость.
-                </p>
+                <p className="feature-title">{t("feature1_title")}</p>
+                <p className="min-w-[390px]">{t("feature1_desc")}</p>
               </div>
             </div>
 
@@ -367,11 +364,8 @@ const Wholesale = () => {
                 <img src="/install 1.png" alt="" />
               </div>
               <div>
-                <p className="feature-title">Монтаж</p>
-                <p className="min-w-[500px]">
-                  Проводим монтажные работы любой сложности и в любое удобное
-                  для Вас время.
-                </p>
+                <p className="feature-title">{t("feature2_title")}</p>
+                <p className="min-w-[500px]">{t("feature2_desc")}</p>
               </div>
             </div>
 
@@ -380,11 +374,8 @@ const Wholesale = () => {
                 <img src="/image 1.png" alt="" />
               </div>
               <div>
-                <p className="feature-title">Брендирование продукта</p>
-                <p className="min-w-[405px]">
-                  Мы нанесем Ваш логотип любой сложности на свою продукцию,
-                  чтобы прибавить ей эксклюзивности.
-                </p>
+                <p className="feature-title">{t("feature3_title")}</p>
+                <p className="min-w-[405px]">{t("feature3_desc")}</p>
               </div>
             </div>
 
@@ -393,11 +384,8 @@ const Wholesale = () => {
                 <img src="/product-return 1 (2).png" alt="" />
               </div>
               <div>
-                <p className="feature-title">Брендирование продукта</p>
-                <p className="min-w-[405px]">
-                  Мы нанесем Ваш логотип любой сложности на свою продукцию,
-                  чтобы прибавить ей эксклюзивности.
-                </p>
+                <p className="feature-title">{t("feature3_title")}</p>
+                <p className="min-w-[405px]">{t("feature3_desc")}</p>
               </div>
             </div>
           </div>

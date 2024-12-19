@@ -115,5 +115,18 @@
       "description": "Biz sizning logotipingizni har qanday murakkablikda mahsulotlarga joylashtiramiz, shunda ular yanada eksklyuziv bo'ladi."
     }
   },
-  "goTo": "O'tish"
+  "goTo": "O'tish",
+
+  "feature1_title": "Ikki barobar narxni qaytarish",
+  "feature1_desc": "Har bir jo'natilgan va nuqsonli chiqadigan mahsulot uchun biz sizga ikki barobar qiymatni qaytaramiz.",
+  "feature2_title": "O'rnatish",
+  "feature2_desc": "Istalgan murakkablikdagi o'rnatish ishlarini sizga qulay vaqtda amalga oshiramiz.",
+  "feature3_title": "Mahsulotni brend qilish",
+  "feature3_desc": "Biz sizning logotipingizni har qanday murakkablikda mahsulotlarimizga joylashtiramiz, bu esa mahsulotga eksklyuzivlik qo'shadi.",
+  "project_title": "Radisson Hotels uchun loyiha",
+  "logo_alt": "Radisson Hotels uchun loyiha",
+  "installed_locks": "Mehmonxona uchun 123 ta Golden Soft o'zgaruvchan qulflar o'rnatildi",
+  "branding_applied": "Barcha qulflarga shaxsiy brending qo'llanildi",
+  "installation_completed": "O'rnatish ishlari amalga oshirildi, qulflarni tizimga ulashda yordam ko'rsatilgan",
+  "budget": "Byudjet - $5000"
 }

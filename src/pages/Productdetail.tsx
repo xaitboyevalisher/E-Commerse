@@ -38,7 +38,7 @@ const Locks = async (): Promise<Lock[]> => {
 
 const addToBasket = async (lockId: number) => {
   try {
-    const response = await api.post("/api/v1/basket/add", { lockId });
+    const response = await api.post("/basket/add", { lockId });
     return response.data;
   } catch (error) {
     throw new Error("Failed to add item to basket");
