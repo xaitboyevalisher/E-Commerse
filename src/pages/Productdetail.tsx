@@ -261,7 +261,6 @@ const ProductDetails = () => {
               <div>Ошибка загрузки комментариев</div>
             ) : (
               <div className="flex flex-wrap">
-                {/* Chap tomondagi sharhlar */}
                 <div className="w-2/3 pr-4">
                   {comments?.map((comment, idx) => (
                     <div
@@ -286,10 +285,8 @@ const ProductDetails = () => {
                   ))}
                 </div>
 
-                {/* O'ng tomondagi forma */}
                 <div className="w-1/3 pl-4">
                   <h3 className="text-lg font-semibold mb-4">Оставить отзыв</h3>
-                  {/* Reyting */}
                   <Rate
                     value={stars}
                     onChange={(value) => setStars(value)}

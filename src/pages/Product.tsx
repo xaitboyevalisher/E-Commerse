@@ -55,22 +55,21 @@ const ProductPage = () => {
   const [isDesktop, setIsDesktop] = useState(window.innerWidth >= 774);
   const { t } = useTranslation();
 
-  const useProducts = (language: string) => {
+  const useProducts = () => {
+    const { i18n } = useTranslation();
     return useQuery<Product[]>({
-      queryKey: ["products", language],
+      queryKey: ["products", i18n.language],
       queryFn: async () => {
         const response = await api.get(`/lock/get-all-by-filter`, {
           params: { startPrice: 0, page: 0, size: 10 },
-          headers: { "Accept-Language": language },
+          headers: { "Accept-Language": i18n.language },
         });
         return response.data.data;
       },
     });
   };
 
-  const language = "en";
-  const { data: products = [], isLoading: productsLoading } =
-    useProducts(language);
+  const { data: products = [], isLoading: productsLoading } = useProducts();
 
   const PageChange = (page: number) => {
     setCurrentPage(page);
