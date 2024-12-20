@@ -36,7 +36,8 @@ const Home = () => {
   const [email, setEmail] = useState("");
   const [isDesktop, setIsDesktop] = useState(window.innerWidth >= 774);
   const { t } = useTranslation();
-  const [language, setLanguage] = useState("en");
+  const [currentSlide, setCurrentSlide] = useState(0);
+  const [cartItems, setCartItems] = useState<any[]>([]);
   const navigate = useNavigate();
   const { data: categories = [], isLoading: categoriesLoading } = useQuery<
     Category[]
@@ -63,7 +64,6 @@ const Home = () => {
     }
   );
   console.log(popularProducts, "popup");
-  const [currentSlide, setCurrentSlide] = useState(0);
 
   const AfterChange = (current: number) => {
     setCurrentSlide(current);
@@ -116,14 +116,13 @@ const Home = () => {
 
   return (
     <Layout>
-      <Header isDesktop={isDesktop} />
       <Content className="mt-8 flex justify-center items-center bg-[#F7F7F7]">
         <div className="w-full max-w-screen-lg px-4">
           <Carousel
             ref={carouselRef}
             autoplay
             dots={false}
-            afterChange={(current) => setCurrentSlide(current)} // Slayd o'zgarganda `currentSlide` yangilanadi
+            afterChange={(current) => setCurrentSlide(current)}
           >
             {displayedProducts.map((product) => (
               <div key={product.id}>

@@ -4,6 +4,7 @@ import { AiOutlineHeart } from "react-icons/ai";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import api from "../api/api";
 import { useState } from "react";
+import { CartItem } from "../App";
 
 const { Option } = Select;
 const { TabPane } = Tabs;
@@ -36,15 +37,6 @@ const Locks = async (): Promise<Lock[]> => {
   return response.data.data;
 };
 
-const addToBasket = async (lockId: number) => {
-  try {
-    const response = await api.post("/basket/add", { lockId });
-    return response.data;
-  } catch (error) {
-    throw new Error("Failed to add item to basket");
-  }
-};
-
 const fetchComments = async (lockId: number): Promise<Comment[]> => {
   const response = await api.get(`/comment/get-all-by-lock/${lockId}`);
   return response.data.data;
@@ -59,7 +51,11 @@ const addComment = async (newComment: Comment) => {
   }
 };
 
-const ProductDetails = () => {
+const ProductDetails = ({
+  addToCart,
+}: {
+  addToCart: (item: Omit<CartItem, "quantity">) => void;
+}) => {
   const { id } = useParams();
   const queryClient = useQueryClient();
   const [selectedPhoto, setSelectedPhoto] = useState<string | null>(null);
@@ -116,17 +112,15 @@ const ProductDetails = () => {
     });
   };
 
-  const handleAddToBasket = async () => {
+  const handleAddToBasket = () => {
     if (!lock) return;
-    setIsAddingToBasket(true);
-    try {
-      await addToBasket(lock.id);
-      message.success("Товар добавлен в корзину");
-    } catch (error) {
-      message.error("Не удалось добавить товар в корзину");
-    } finally {
-      setIsAddingToBasket(false);
-    }
+    addToCart({
+      id: lock.id,
+      name: lock.name,
+      price: lock.price,
+      image: lock.photos[0],
+    });
+    message.success("Товар добавлен в корзину");
   };
 
   if (isLoading) {
@@ -292,7 +286,6 @@ const ProductDetails = () => {
                     onChange={(value) => setStars(value)}
                     className="mb-4"
                   />
-                  {/* Inputlar */}
                   <input
                     value={name}
                     onChange={(e) => setName(e.target.value)}

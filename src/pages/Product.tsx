@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { Link, useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import styled from "@emotion/styled";
@@ -47,20 +47,30 @@ interface Product {
   photos: string[];
 }
 
-const ProductPage = () => {
+export type CartItem = {
+  id: number;
+  name: string;
+  price: number;
+  quantity: number;
+  image: string;
+  gift?: string;
+};
+
+const ProductPage: React.FC = () => {
   const { categoryTitle } = useParams<{ categoryTitle: string }>();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [isDesktop, setIsDesktop] = useState(window.innerWidth >= 774);
   const { t } = useTranslation();
+  const [cartItems, setCartItems] = useState<CartItem[]>([]);
 
   const useProducts = () => {
     const { i18n } = useTranslation();
     return useQuery<Product[]>({
       queryKey: ["products", i18n.language],
       queryFn: async () => {
-        const response = await api.get(`/api/v1/lock/get-all-by-filter`, {
+        const response = await api.get(`/lock/get-all-by-filter`, {
           params: { startPrice: 0, page: 0, size: 10 },
           headers: { "Accept-Language": i18n.language },
         });
@@ -117,9 +127,32 @@ const ProductPage = () => {
     }
   };
 
+  const addToCart = (product: Product) => {
+    setCartItems((prevItems) => {
+      const existingItem = prevItems.find((item) => item.id === product.id);
+      if (existingItem) {
+        return prevItems.map((item) =>
+          item.id === product.id
+            ? { ...item, quantity: item.quantity + 1 }
+            : item
+        );
+      } else {
+        return [
+          ...prevItems,
+          {
+            id: product.id,
+            name: product.name,
+            price: product.price,
+            quantity: 1,
+            image: product.photos[0] || "/placeholder.jpg",
+          },
+        ];
+      }
+    });
+  };
+
   return (
     <Layout className="min-h-screen bg-gray-100">
-      <Header isDesktop={isDesktop} />
       <Content>
         <div className="container mx-auto flex flex-col space-y-6">
           <div className="mt-8">
@@ -236,7 +269,12 @@ const ProductPage = () => {
                           </span>
                         )}
                       </div>
-                      <Button type="primary" block className="mt-4">
+                      <Button
+                        type="primary"
+                        block
+                        className="mt-4"
+                        onClick={() => addToCart(product)}
+                      >
                         Add to Cart
                       </Button>
                     </div>

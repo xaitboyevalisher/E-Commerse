@@ -234,7 +234,6 @@ const Wholesale = () => {
 
   return (
     <Layout>
-      <Header isDesktop={isDesktop} />
       <div css={formContainerStyle}>
         <div css={textStyle}>
           <h2>{t("formTitle")}</h2>

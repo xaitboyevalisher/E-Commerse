@@ -15,14 +15,12 @@ export const Register = () => {
     setLoading(true);
 
     try {
-      // `api.ts` dagi register funksiyasini chaqirish
       await register(values);
 
-      // Foydalanuvchi ismini localStorage ga saqlash
       localStorage.setItem("userName", values.name);
 
       message.success("Ro'yxatdan o'tish muvaffaqiyatli!");
-      navigate("/login"); // Ro'yxatdan o'tgandan keyin login sahifasiga o'tish
+      navigate("/login");
     } catch (error) {
       console.error("Ro'yxatdan o'tishda xatolik:", error);
       message.error(

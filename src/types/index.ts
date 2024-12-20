@@ -11,8 +11,6 @@ export interface Category {
   updatedAt: string;
 }
 
-
-
 export interface ProductCardProps {
   product: Product;
 }
@@ -91,10 +89,38 @@ export interface Product {
   createdAt: string;
   updatedAt: string;
   colors: string[];
-};
+}
 
-export interface ApiResponse<T>  {
+export interface ApiResponse<T> {
   success: boolean;
   message: string;
   data: T;
+}
+
+export type OrderRequest = {
+  orderLines: { lockId: number; amount: number }[];
+  customerDto: {
+    name: string;
+    surname: string;
+    phone: string;
+    email: string;
+  };
+  orderDetailDto: {
+    city: string;
+    branch: string;
+    paymentType: "WITH_CARD" | "WITH_CASH";
+    setupLock: boolean;
+    installSoft: boolean;
+    comment: string;
+  };
+  promoCode: string;
 };
+
+export interface CartItem {
+  id: number;
+  name: string;
+  price: number;
+  quantity: number;
+  image?: string;
+  gift?: string;
+}

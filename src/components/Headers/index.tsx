@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Menu,
   Button,
@@ -9,18 +9,19 @@ import {
   List,
   Modal,
   Typography,
+  Spin,
 } from "antd";
 import { IoIosArrowDown, IoIosArrowUp } from "react-icons/io";
 import { FaBars, FaPhoneAlt, FaUser } from "react-icons/fa";
 import { AiOutlineShoppingCart, AiOutlineHeart } from "react-icons/ai";
 import { useTranslation } from "react-i18next";
-import i18n from "../../i18/i18";
 import { Link, useNavigate } from "react-router-dom";
 import { FiPlus, FiTrash } from "react-icons/fi";
+import { getLocks, Lock } from "../../productapi/locks";
 
 const { Text, Title } = Typography;
 
-type CartItem = {
+export type CartItem = {
   id: number;
   name: string;
   price: number;
@@ -29,24 +30,27 @@ type CartItem = {
   gift?: string;
 };
 
-const Header = ({ isDesktop }: { isDesktop: boolean }) => {
+interface HeaderProps {
+  isDesktop: boolean;
+  cartItems: CartItem[];
+  setCartItems: React.Dispatch<React.SetStateAction<CartItem[]>>;
+}
+
+const Header: React.FC<HeaderProps> = ({
+  isDesktop,
+  cartItems,
+  setCartItems,
+}) => {
   const [isCatalogOpen, setIsCatalogOpen] = useState(false);
   const [isMenuOpen, setMenuOpen] = useState(false);
-  const [cart, setCart] = useState<any[]>([]);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const { t, i18n } = useTranslation();
   const navigate = useNavigate();
   const [userName, setUserName] = useState<string | null>(null);
-  const [cartItems, setCartItems] = useState<CartItem[]>([
-    {
-      id: 1,
-      name: "Дверной Замок Golden Soft для офиса",
-      price: 33000,
-      quantity: 2,
-      image: "lock-image-url",
-      gift: "Приложение к замкам Golden Service",
-    },
-  ]);
+  const [frequentlyBoughtLocks, setFrequentlyBoughtLocks] = useState<Lock[]>(
+    []
+  );
+  const [isLoadingLocks, setIsLoadingLocks] = useState(false);
 
   const QuantityChange = (id: number, quantity: number) => {
     setCartItems((prev) =>
@@ -56,21 +60,6 @@ const Header = ({ isDesktop }: { isDesktop: boolean }) => {
 
   const Remove = (id: number) => {
     setCartItems((prev) => prev.filter((item) => item.id !== id));
-  };
-
-  const AddToCart = (item: Omit<CartItem, "quantity">) => {
-    setCartItems((prev) => {
-      const existingItem = prev.find((cartItem) => cartItem.id === item.id);
-      if (existingItem) {
-        return prev.map((cartItem) =>
-          cartItem.id === item.id
-            ? { ...cartItem, quantity: cartItem.quantity + 1 }
-            : cartItem
-        );
-      } else {
-        return [...prev, { ...item, quantity: 1 }];
-      }
-    });
   };
 
   const totalPrice = cartItems.reduce(
@@ -83,6 +72,22 @@ const Header = ({ isDesktop }: { isDesktop: boolean }) => {
     if (storedName) {
       setUserName(storedName);
     }
+  }, []);
+
+  useEffect(() => {
+    const fetchLocks = async () => {
+      setIsLoadingLocks(true);
+      try {
+        const locks = await getLocks();
+        setFrequentlyBoughtLocks(locks.slice(0, 3)); // Display only the first 3 locks
+      } catch (error) {
+        console.error("Error fetching locks:", error);
+      } finally {
+        setIsLoadingLocks(false);
+      }
+    };
+
+    fetchLocks();
   }, []);
 
   const toggleCatalog = () => {
@@ -108,8 +113,8 @@ const Header = ({ isDesktop }: { isDesktop: boolean }) => {
   );
 
   const UserClick = () => {
-    const token = localStorage.getItem("access_token");
-    if (!token) {
+    const accessToken = localStorage.getItem("access_token");
+    if (accessToken) {
       navigate("/login");
     } else {
       navigate("/profile");
@@ -122,6 +127,21 @@ const Header = ({ isDesktop }: { isDesktop: boolean }) => {
 
   const CloseModal = () => {
     setIsModalVisible(false);
+  };
+
+  const addToCart = (lock: Lock) => {
+    const newItem: CartItem = {
+      id: lock.id,
+      name: lock.name,
+      price: lock.price,
+      quantity: 1,
+      image: lock.photos[0] || "/placeholder.jpg",
+    };
+    setCartItems((prev) => [...prev, newItem]);
+  };
+
+  const handleOrder = () => {
+    navigate("/order", { state: { cartItems, totalPrice } });
   };
 
   const { Header: AntHeader } = Layout;
@@ -306,7 +326,7 @@ const Header = ({ isDesktop }: { isDesktop: boolean }) => {
 
             <div className="flex items-center gap-4">
               <AiOutlineHeart className="text-2xl text-gray-600" />
-              <Badge count={cart.length} size="small" offset={[10, 0]}>
+              <Badge count={cartItems.length} size="small" offset={[10, 0]}>
                 <AiOutlineShoppingCart
                   className="text-2xl text-gray-600 cursor-pointer"
                   onClick={showCartModal}
@@ -397,7 +417,7 @@ const Header = ({ isDesktop }: { isDesktop: boolean }) => {
             Итого: <span>{totalPrice}₽</span>
           </Title>
           <div>
-            <Button type="primary" className="mr-2">
+            <Button type="primary" className="mr-2" onClick={handleOrder}>
               Оформить заказ
             </Button>
             <Button>Продолжить покупки</Button>
@@ -406,33 +426,38 @@ const Header = ({ isDesktop }: { isDesktop: boolean }) => {
 
         <div className="mt-6">
           <Title level={5}>С этим покупают</Title>
-          <List
-            dataSource={[
-              {
-                id: 2,
-                name: "Замок Golden Soft",
-                price: 9000,
-                image: "lock-image-url",
-              },
-            ]}
-            renderItem={(item) => (
-              <List.Item key={item.id} className="flex items-center">
-                <img
-                  src={item.image}
-                  alt={item.name}
-                  className="w-12 h-12 object-cover mr-4"
-                />
-                <div className="flex-1">
-                  <Text>{item.name}</Text>
-                </div>
-                <Button
-                  type="link"
-                  icon={<FiPlus />}
-                  onClick={() => AddToCart(item)}
-                />
-              </List.Item>
-            )}
-          />
+          {isLoadingLocks ? (
+            <Spin />
+          ) : (
+            <List
+              dataSource={frequentlyBoughtLocks}
+              renderItem={(item) => (
+                <List.Item
+                  key={item.id}
+                  className="flex items-center justify-between"
+                >
+                  <div className="flex items-center">
+                    <img
+                      src={item.photos[0] || "/placeholder.jpg"}
+                      alt={item.name}
+                      className="w-12 h-12 object-cover mr-4"
+                    />
+                    <div className="flex-1">
+                      <div>{item.name}</div>
+                      <div className="text-sm text-gray-500">
+                        {item.lockType}
+                      </div>
+                    </div>
+                    <div>{item.price}₽</div>
+                  </div>
+                  <FiPlus
+                    onClick={() => addToCart(item)}
+                    className="cursor-pointer text-green-600 text-xl"
+                  />
+                </List.Item>
+              )}
+            />
+          )}
         </div>
       </Modal>
     </div>
