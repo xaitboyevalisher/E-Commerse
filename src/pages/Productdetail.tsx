@@ -170,37 +170,6 @@ const ProductDetails = ({
             <span className="text-gray-500">(22 отзывов)</span>
           </div>
 
-          <p className="mt-4 text-gray-600">Подходит для установки на:</p>
-          <ul className="list-disc pl-5 text-gray-600">
-            <li>Деревянную дверь</li>
-            <li>Межкомнатную дверь</li>
-          </ul>
-
-          <div className="mt-6 flex gap-8 items-start">
-            <div>
-              <p className="text-gray-600 mb-2 font-medium">Комплектация</p>
-              <Select
-                className="w-72"
-                defaultValue="Smart замок без приложения"
-                size="large"
-              >
-                <Option value="smart-lock">Smart замок без приложения</Option>
-                <Option value="smart-lock-app">
-                  Smart замок с приложением
-                </Option>
-              </Select>
-            </div>
-
-            <div>
-              <p className="text-gray-600 mb-2 font-medium">Цвет</p>
-              <div className="flex gap-4">
-                <div className="w-8 h-8 bg-black rounded cursor-pointer border-2 border-gray-300"></div>
-                <div className="w-8 h-8 bg-gray-400 rounded cursor-pointer border-2 border-gray-300"></div>
-                <div className="w-8 h-8 bg-yellow-500 rounded cursor-pointer border-2 border-gray-300"></div>
-              </div>
-            </div>
-          </div>
-
           <div className="mt-6 flex flex-col gap-6">
             <div className="flex items-center justify-between">
               <div>
@@ -242,11 +211,61 @@ const ProductDetails = ({
 
       <div className="mt-8">
         <Tabs defaultActiveKey="1">
-          <TabPane tab="Характеристики" key="1">
-            <p>{lock.description || "Описание отсутствует"}</p>
+          <TabPane tab="Характеристики" key="2">
+            <div className="grid grid-cols-2 gap-4 text-gray-700">
+              <div>
+                <p className="font-medium">Память на количество карт:</p>
+                <p>2033</p>
+              </div>
+              <div>
+                <p className="font-medium">Тип двери:</p>
+                <p>Деревянная, металлическая</p>
+              </div>
+              <div>
+                <p className="font-medium">Приложение:</p>
+                <p>Нет</p>
+              </div>
+              <div>
+                <p className="font-medium">Толщина двери:</p>
+                <p>38-55 мм</p>
+              </div>
+              <div>
+                <p className="font-medium">Материал:</p>
+                <p>Сталь, силиконовые вставки</p>
+              </div>
+              <div>
+                <p className="font-medium">Размеры:</p>
+                <p>302мм × 43мм × 22.55мм</p>
+              </div>
+              <div>
+                <p className="font-medium">Цвет:</p>
+                <p>Черный, хром</p>
+              </div>
+              <div>
+                <p className="font-medium">Вес:</p>
+                <p>2.5 кг</p>
+              </div>
+              <div>
+                <p className="font-medium">Питание:</p>
+                <p>DC 6V, 4 AAA</p>
+              </div>
+              <div>
+                <p className="font-medium">Комплектация:</p>
+                <p>Без матрицы, с матрицей</p>
+              </div>
+              <div>
+                <p className="font-medium">Разблокировка:</p>
+                <p>
+                  Пин-код, карта или браслет Mifare, ключ, приложение, отпечаток
+                  пальца
+                </p>
+              </div>
+            </div>
           </TabPane>
-          <TabPane tab="Описание" key="2">
-            <p>{lock.description || "Описание отсутствует"}</p>
+          <TabPane tab="Описание" key="1">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <p>{lock.description || "Описание отсутствует"}</p>
+            </div>
           </TabPane>
           <TabPane tab="Отзывы" key="3">
             {commentsLoading ? (

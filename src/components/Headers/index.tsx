@@ -15,7 +15,7 @@ import { IoIosArrowDown, IoIosArrowUp } from "react-icons/io";
 import { FaBars, FaPhoneAlt, FaUser } from "react-icons/fa";
 import { AiOutlineShoppingCart, AiOutlineHeart } from "react-icons/ai";
 import { useTranslation } from "react-i18next";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { FiPlus, FiTrash } from "react-icons/fi";
 import { getLocks, Lock } from "../../productapi/locks";
 
@@ -46,6 +46,7 @@ const Header: React.FC<HeaderProps> = ({
   const [isModalVisible, setIsModalVisible] = useState(false);
   const { t, i18n } = useTranslation();
   const navigate = useNavigate();
+  const location = useLocation(); // Access the current location
   const [userName, setUserName] = useState<string | null>(null);
   const [frequentlyBoughtLocks, setFrequentlyBoughtLocks] = useState<Lock[]>(
     []
@@ -79,7 +80,7 @@ const Header: React.FC<HeaderProps> = ({
       setIsLoadingLocks(true);
       try {
         const locks = await getLocks();
-        setFrequentlyBoughtLocks(locks.slice(0, 3)); // Display only the first 3 locks
+        setFrequentlyBoughtLocks(locks.slice(0, 3));
       } catch (error) {
         console.error("Error fetching locks:", error);
       } finally {
@@ -89,6 +90,13 @@ const Header: React.FC<HeaderProps> = ({
 
     fetchLocks();
   }, []);
+
+  useEffect(() => {
+    // Close the modal if the user navigates to the /order route
+    if (location.pathname === "/order") {
+      setIsModalVisible(false);
+    }
+  }, [location]); // This hook will run whenever the location (route) changes
 
   const toggleCatalog = () => {
     setIsCatalogOpen(!isCatalogOpen);
@@ -422,42 +430,6 @@ const Header: React.FC<HeaderProps> = ({
             </Button>
             <Button>Продолжить покупки</Button>
           </div>
-        </div>
-
-        <div className="mt-6">
-          <Title level={5}>С этим покупают</Title>
-          {isLoadingLocks ? (
-            <Spin />
-          ) : (
-            <List
-              dataSource={frequentlyBoughtLocks}
-              renderItem={(item) => (
-                <List.Item
-                  key={item.id}
-                  className="flex items-center justify-between"
-                >
-                  <div className="flex items-center">
-                    <img
-                      src={item.photos[0] || "/placeholder.jpg"}
-                      alt={item.name}
-                      className="w-12 h-12 object-cover mr-4"
-                    />
-                    <div className="flex-1">
-                      <div>{item.name}</div>
-                      <div className="text-sm text-gray-500">
-                        {item.lockType}
-                      </div>
-                    </div>
-                    <div>{item.price}₽</div>
-                  </div>
-                  <FiPlus
-                    onClick={() => addToCart(item)}
-                    className="cursor-pointer text-green-600 text-xl"
-                  />
-                </List.Item>
-              )}
-            />
-          )}
         </div>
       </Modal>
     </div>

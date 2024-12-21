@@ -58,7 +58,6 @@ export interface ResetPasswordPayload {
   newPassword: string;
 }
 
-// types.ts
 export interface ApplicationData {
   name: string;
   company: string;
@@ -72,7 +71,7 @@ export interface ApplicationData {
 export interface ApplicationResponse {
   success: boolean;
   message: string;
-  data?: any; // Or add specific response structure if known
+  data?: any; 
 }
 
 export interface Product {
@@ -97,8 +96,18 @@ export interface ApiResponse<T> {
   data: T;
 }
 
+export interface OrderRequestResponse <T> {
+  status: string;
+  message: string;
+  data: T; 
+};
+
+
 export type OrderRequest = {
-  orderLines: { lockId: number; amount: number }[];
+  orderLines: {
+    lockId: number;
+    amount: number;
+  }[];
   customerDto: {
     name: string;
     surname: string;
@@ -116,6 +125,7 @@ export type OrderRequest = {
   promoCode: string;
 };
 
+
 export interface CartItem {
   id: number;
   name: string;
@@ -124,3 +134,39 @@ export interface CartItem {
   image?: string;
   gift?: string;
 }
+
+export interface BatteryDto {
+  voltage: number;
+  ampere: number;
+}
+
+export interface DoorWidthDto {
+  a: number;
+  b: number;
+}
+
+export interface LockSizeReq {
+  a: number;
+  b: number;
+  c: number;
+}
+
+export interface LockDetails {
+  lockId: number;
+  memoryOfCards: number;
+  application: boolean;
+  colors: string[];
+  materialUz: string;
+  materialEn: string;
+  materialRu: string;
+  batteryDto: BatteryDto;
+  unlockTypes: string[];
+  doorType: string;
+  doorWidthDto: DoorWidthDto;
+  lockSizeReq: LockSizeReq;
+  weight: number;
+  equipmentUz: string;
+  equipmentEn: string;
+  equipmentRu: string;
+}
+

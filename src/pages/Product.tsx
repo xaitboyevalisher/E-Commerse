@@ -6,22 +6,18 @@ import api from "../api/api";
 import { useQuery } from "@tanstack/react-query";
 import {
   Layout,
-  Slider,
-  Checkbox,
   Button,
   Tag,
   Select,
   Card,
-  Pagination,
   Row,
   Col,
   Input,
   message,
 } from "antd";
-import { IoIosArrowDown } from "react-icons/io";
+
 import { AiOutlineStar } from "react-icons/ai";
 import { FaCheckCircle, FaGift } from "react-icons/fa";
-import Header from "../components/Headers";
 import Footers from "@src/components/Headers/Footer";
 import FilterComponent from "./Filter";
 

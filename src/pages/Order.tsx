@@ -10,7 +10,7 @@ import {
   List,
 } from "antd";
 import { useLocation } from "react-router-dom";
-import { CartItem, OrderRequest } from "../types"; // Import the types
+import { CartItem, OrderRequest } from "../types";
 import api from "../api/api";
 
 const { Title, Text } = Typography;
@@ -23,7 +23,6 @@ const OrderPage: React.FC = () => {
     location.state?.cartItems || []
   );
 
-  // Calculate total amount
   useEffect(() => {
     const totalAmount = cartItems.reduce((acc: number, item: CartItem) => {
       return acc + item.price * item.quantity;
@@ -66,12 +65,12 @@ const OrderPage: React.FC = () => {
       promoCode: values.promoCode || "",
     };
 
-    const token = localStorage.getItem("accessToken"); // Assuming the token is stored in localStorage
+    const token = localStorage.getItem("accessToken");
 
     try {
       const response = await api.post("/order/add", orderData, {
         headers: {
-          Authorization: `Bearer ${token}`, // Adding Authorization header
+          Authorization: `Bearer ${token}`,
         },
       });
       console.log("Order submitted successfully:", response);
@@ -98,7 +97,6 @@ const OrderPage: React.FC = () => {
             quantity: 2,
           }}
         >
-          {/* Contact Information */}
           <section className="mb-6">
             <Title level={4}>1. Контактные данные</Title>
             <div className="grid grid-cols-2 gap-4">
@@ -135,7 +133,6 @@ const OrderPage: React.FC = () => {
             </div>
           </section>
 
-          {/* Delivery Section */}
           <section className="mb-6">
             <Title level={4}>2. Доставка</Title>
             <Form.Item name="delivery">
@@ -163,7 +160,6 @@ const OrderPage: React.FC = () => {
             </Form.Item>
           </section>
 
-          {/* Payment Section */}
           <section className="mb-6">
             <Title level={4}>3. Оплата</Title>
             <Form.Item name="payment">

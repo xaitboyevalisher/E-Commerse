@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import api from "../api/api";
-import Header from "../components/Headers";
 import Footers from "../components/Headers/Footer";
 import { Card, Col, Layout, Row, Spin, Button } from "antd";
 import { useTranslation } from "react-i18next";
@@ -59,7 +58,6 @@ const Categories = () => {
 
   return (
     <Layout>
-      <Header isDesktop={isDesktop} />
       <div className="combined-container">
         <div className="categories py-12 flex flex-col items-center">
           <h2 className="text-center text-2xl font-bold mb-8">
