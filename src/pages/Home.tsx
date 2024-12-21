@@ -136,7 +136,7 @@ const Home = () => {
                     className="flex justify-center md:justify-end"
                   >
                     <img
-                      src={product.photos[0]} // Birinchi foto tasvir
+                      src={product.photos[0]}
                       alt={product.name}
                       style={{ maxWidth: "400px", backgroundColor: "white" }}
                     />
@@ -162,13 +162,18 @@ const Home = () => {
                         </div>
                       )}
                     </div>
-                    <Button
-                      type="primary"
-                      className="mt-4"
-                      style={{ width: "200px" }}
+                    <Link
+                      to={`/product/${product.id}`}
+                      className="text-blue-600 hover:underline"
                     >
-                      Add to Cart
-                    </Button>
+                      <Button
+                        type="primary"
+                        className="mt-4"
+                        style={{ width: "200px" }}
+                      >
+                        Add to Cart
+                      </Button>
+                    </Link>
                   </Col>
                 </Row>
               </div>
@@ -182,7 +187,7 @@ const Home = () => {
                 <BiChevronLeft style={{ fontSize: "24px", color: "#333" }} />
               }
               style={{ border: "none", background: "transparent" }}
-              onClick={() => carouselRef.current?.prev()} // Oldingi slayd
+              onClick={() => carouselRef.current?.prev()}
             />
             <div className="flex items-center space-x-2">
               {[...Array(displayedProducts.length)].map((_, index) => (
@@ -443,9 +448,6 @@ const Home = () => {
                       </span>
                     )}
                   </div>
-                  <Button type="primary" block className="mt-4">
-                    Add to Cart
-                  </Button>
                 </div>
               </Card>
             </Col>

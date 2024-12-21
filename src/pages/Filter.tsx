@@ -197,9 +197,6 @@ const FilterPage: React.FC = () => {
                         </span>
                       )}
                     </div>
-                    <Button type="primary" block className="mt-4">
-                      Add to Cart
-                    </Button>
                   </div>
                 </Card>
               </Col>

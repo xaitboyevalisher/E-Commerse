@@ -37,7 +37,7 @@ api.interceptors.response.use(
       if (refreshToken) {
         try {
           const refreshResponse: AxiosResponse = await axios.post(
-            `${baseUrl}/auth/refresh`,
+            `${baseUrl}/auth/refresh-token`,
             { refresh_token: refreshToken }
           );
           const newAccessToken = refreshResponse.data.access_token;
@@ -66,7 +66,7 @@ export const register = async (user: {
       console.log("Ro'yxatdan o'tish muvaffaqiyatli:", response.data);
       const { access_token, refresh_token } = response.data;
 
-      localStorage.setItem("access_token", access_token);
+      localStorage.setItem("acces_tokesn", access_token);
       localStorage.setItem("refresh_token", refresh_token);
     }
   } catch (error) {

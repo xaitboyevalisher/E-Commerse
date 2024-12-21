@@ -15,7 +15,6 @@ import {
   Image,
   message,
 } from "antd";
-import Header from "../components/Headers";
 import Footers from "@src/components/Headers/Footer";
 import { BiChevronLeft, BiChevronRight } from "react-icons/bi";
 import { useTranslation } from "react-i18next";

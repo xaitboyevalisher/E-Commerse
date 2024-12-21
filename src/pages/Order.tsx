@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import {
   Form,
   Input,
@@ -8,16 +8,18 @@ import {
   InputNumber,
   Typography,
   List,
+  message,
 } from "antd";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { CartItem, OrderRequest } from "../types";
 import api from "../api/api";
 
 const { Title, Text } = Typography;
 
-const OrderPage: React.FC = () => {
+const OrderPage = () => {
   const [form] = Form.useForm();
   const location = useLocation();
+  const navigate = useNavigate();
   const [total, setTotal] = useState(0);
   const [cartItems, setCartItems] = useState<CartItem[]>(
     location.state?.cartItems || []
@@ -29,6 +31,14 @@ const OrderPage: React.FC = () => {
     }, 0);
     setTotal(totalAmount);
   }, [cartItems]);
+
+  useEffect(() => {
+    const accessToken = sessionStorage.getItem("accessToken");
+    if (!accessToken) {
+      message.error("Вы не авторизованы. Пожалуйста, войдите в систему.");
+      navigate("/login");
+    }
+  }, [navigate]);
 
   const handleInputNumberChange = (value: number | null, id: number) => {
     if (value !== null) {
@@ -58,24 +68,44 @@ const OrderPage: React.FC = () => {
         city: values.city || "",
         branch: values.branch || "",
         paymentType: values.payment === "card" ? "WITH_CARD" : "WITH_CASH",
-        setupLock: values.installation,
-        installSoft: values.installation,
-        comment: values.comment || "",
+        setupLock: values.installation || true,
+        installSoft: values.installation || true,
+        comment: values.comment || null,
       },
-      promoCode: values.promoCode || "",
+      promoCode: null,
     };
 
-    const token = localStorage.getItem("accessToken");
+    const accessToken = sessionStorage.getItem("accessToken");
+
+    if (!accessToken) {
+      message.error("Вы не авторизованы. Пожалуйста, войдите в систему.");
+      navigate("/login");
+      return;
+    }
 
     try {
       const response = await api.post("/order/add", orderData, {
         headers: {
-          Authorization: `Bearer ${token}`,
+          Authorization: `Bearer ${accessToken}`,
         },
       });
-      console.log("Order submitted successfully:", response);
+
+      if (response.data.success) {
+        message.success("Заказ успешно оформлен!");
+
+        navigate("/", {
+          state: { orderId: response.data.orderId },
+        });
+      } else {
+        message.error(
+          "Ошибка при оформлении заказа. Пожалуйста, попробуйте снова."
+        );
+      }
     } catch (error) {
       console.error("Error submitting order:", error);
+      message.error(
+        "Произошла ошибка при отправке заказа. Пожалуйста, попробуйте позже."
+      );
     }
   };
 

@@ -1,21 +1,14 @@
 /** @jsxImportSource @emotion/react */
 import { Layout, Form, Input, Button, Typography, message, Space } from "antd";
-import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import axios from "axios";
+import { useState } from "react";
+import { useNavigate, Link } from "react-router-dom";
+import api from "../api/axios";
 
-import { Link } from "react-router-dom";
+const { Title, Text } = Typography;
 
 export const LoginPage = () => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
-
-  const api = axios.create({
-    baseURL: "http://8.210.211.217:8080/",
-    headers: {
-      "Content-Type": "application/json",
-    },
-  });
 
   const handleLogin = async (values: { email: string; password: string }) => {
     setLoading(true);
@@ -26,9 +19,13 @@ export const LoginPage = () => {
         password: values.password,
       });
 
-      if (response.status === 200) {
-        const { accessToken } = response.data;
+      if (response.data.success) {
+        const { accessToken } = response.data.data.token;
+        const { name } = response.data.data.user;
+
         sessionStorage.setItem("accessToken", accessToken);
+        localStorage.setItem("userName", name);
+
         message.success("Muvaffaqiyatli kirish!");
         navigate("/");
       }
@@ -39,32 +36,36 @@ export const LoginPage = () => {
     }
   };
 
-  useEffect(() => {
-    const token = sessionStorage.getItem("accessToken");
-    if (token) navigate("/");
-  }, [navigate]);
-
   return (
     <Layout
       style={{ minHeight: "100vh" }}
       className="flex items-center justify-center"
     >
       <div style={{ maxWidth: 400, width: "100%", padding: 20 }}>
-        <Typography.Title level={2} className="text-center mb-4">
+        <Title level={2} className="text-center mb-4">
           Tizimga Kirish
-        </Typography.Title>
+        </Title>
         <Form onFinish={handleLogin} layout="vertical">
           <Form.Item
             name="email"
             label="Email"
-            rules={[{ required: true, message: "Loginni kiriting!" }]}
+            rules={[
+              { required: true, message: "Emailni kiriting!" },
+              { type: "email", message: "Email formatini to'g'ri kiriting!" },
+            ]}
           >
             <Input />
           </Form.Item>
           <Form.Item
             name="password"
             label="Parol"
-            rules={[{ required: true, message: "Parolni kiriting!" }]}
+            rules={[
+              { required: true, message: "Parolni kiriting!" },
+              {
+                min: 6,
+                message: "Parol kamida 6 ta belgidan iborat bo'lishi kerak!",
+              },
+            ]}
           >
             <Input.Password />
           </Form.Item>
@@ -76,12 +77,12 @@ export const LoginPage = () => {
         </Form>
 
         <Space className="w-full justify-center">
-          <Typography.Text>
+          <Text>
             Hisobingiz yo'qmi?{" "}
             <Link to="/register" className="text-blue-500">
               Ro'yxatdan o'tish
             </Link>
-          </Typography.Text>
+          </Text>
         </Space>
       </div>
     </Layout>

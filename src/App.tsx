@@ -35,7 +35,7 @@ const PrivateRoute: React.FC<{ children: JSX.Element }> = ({ children }) => {
   return isAuthenticated ? children : <Navigate to="/login" replace />;
 };
 
-const App: React.FC = () => {
+const App = () => {
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
 
   const addToCart = (item: Omit<CartItem, "quantity">) => {

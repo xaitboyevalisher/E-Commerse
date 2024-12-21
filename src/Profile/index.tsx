@@ -29,12 +29,19 @@ const Profile = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
+    // Retrieve token and username from storage
+    const accessToken = sessionStorage.getItem("accessToken");
     const userName = localStorage.getItem("userName");
+
+    if (!accessToken) {
+      navigate("/login"); // Redirect to login if no token
+    }
+
     if (userName) {
       setName(userName);
-      setNewName(userName); // Initialize newName with the stored name
+      setNewName(userName);
     }
-  }, []);
+  }, [navigate]);
 
   const PhotoUpload = async (info: any) => {
     const file = info.file.originFileObj;

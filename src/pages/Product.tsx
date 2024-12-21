@@ -265,14 +265,6 @@ const ProductPage: React.FC = () => {
                           </span>
                         )}
                       </div>
-                      <Button
-                        type="primary"
-                        block
-                        className="mt-4"
-                        onClick={() => addToCart(product)}
-                      >
-                        Add to Cart
-                      </Button>
                     </div>
                   </Card>
                 </Col>

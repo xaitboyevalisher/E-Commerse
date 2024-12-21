@@ -1,5 +1,4 @@
 import { Row, Col, Button, Input, Layout, message } from "antd";
-import Header from "../components/Headers";
 import Footers from "@src/components/Headers/Footer";
 import { css } from "@emotion/react";
 import api from "../api/api";
@@ -46,7 +45,6 @@ const AboutUs = () => {
 
   return (
     <Layout>
-      <Header isDesktop={isDesktop} />
       <div className="bg-gray-100 overflow-x-hidden w-full">
         <div className="container mx-auto py-10 px-4">
           <Row gutter={[32, 32]} justify="center" align="middle">
@@ -188,7 +186,7 @@ const AboutUs = () => {
                       Россия, Ростов-на-Дону <br /> ул. Богачева, 16
                     </p>
                     <img
-                      src="/contact-image-1.jpg"
+                      src="/telegram-cloud-photo-size-2-5294409093928301704-y 1.png"
                       alt="Адрес"
                       className="rounded-lg shadow-lg mt-4"
                       style={{ width: "100%" }}
@@ -201,7 +199,7 @@ const AboutUs = () => {
                       +7 (988) 565 00 38 <br /> +375 33 662 82 56
                     </p>
                     <img
-                      src="/contact-image-2.jpg"
+                      src="/telegram-cloud-photo-size-2-5294409093928301704-y 2.png"
                       alt="Телефоны"
                       className="rounded-lg shadow-lg mt-4"
                       style={{ width: "100%" }}
@@ -214,7 +212,7 @@ const AboutUs = () => {
                       vladperctev@mail.ru <br /> korobko416@gmail.com
                     </p>
                     <img
-                      src="/contact-image-3.jpg"
+                      src="/telegram-cloud-photo-size-2-5294409093928301704-y 3.png"
                       alt="Email"
                       className="rounded-lg shadow-lg mt-4"
                       style={{ width: "100%" }}

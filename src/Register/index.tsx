@@ -1,7 +1,7 @@
 import { Layout, Form, Input, Button, Typography, message } from "antd";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { register } from "../api/api"; // `register` funksiyasini import qilish
+import { register } from "../api/api";
 
 export const Register = () => {
   const [loading, setLoading] = useState(false);

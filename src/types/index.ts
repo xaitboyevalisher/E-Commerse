@@ -71,7 +71,7 @@ export interface ApplicationData {
 export interface ApplicationResponse {
   success: boolean;
   message: string;
-  data?: any; 
+  data?: any;
 }
 
 export interface Product {
@@ -96,12 +96,11 @@ export interface ApiResponse<T> {
   data: T;
 }
 
-export interface OrderRequestResponse <T> {
+export interface OrderRequestResponse<T> {
   status: string;
   message: string;
-  data: T; 
-};
-
+  data: T;
+}
 
 export type OrderRequest = {
   orderLines: {
@@ -118,13 +117,12 @@ export type OrderRequest = {
     city: string;
     branch: string;
     paymentType: "WITH_CARD" | "WITH_CASH";
-    setupLock: boolean;
-    installSoft: boolean;
+    setupLock: true;
+    installSoft: true;
     comment: string;
   };
   promoCode: string;
 };
-
 
 export interface CartItem {
   id: number;
@@ -134,39 +132,3 @@ export interface CartItem {
   image?: string;
   gift?: string;
 }
-
-export interface BatteryDto {
-  voltage: number;
-  ampere: number;
-}
-
-export interface DoorWidthDto {
-  a: number;
-  b: number;
-}
-
-export interface LockSizeReq {
-  a: number;
-  b: number;
-  c: number;
-}
-
-export interface LockDetails {
-  lockId: number;
-  memoryOfCards: number;
-  application: boolean;
-  colors: string[];
-  materialUz: string;
-  materialEn: string;
-  materialRu: string;
-  batteryDto: BatteryDto;
-  unlockTypes: string[];
-  doorType: string;
-  doorWidthDto: DoorWidthDto;
-  lockSizeReq: LockSizeReq;
-  weight: number;
-  equipmentUz: string;
-  equipmentEn: string;
-  equipmentRu: string;
-}
-
