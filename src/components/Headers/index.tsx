@@ -328,12 +328,11 @@ const Header: React.FC<HeaderProps> = ({
                 <FaPhoneAlt style={{ color: "blue" }} />
               </a>
               <p className="text-gray-400">
-                <a href="tel:+375336628256">+7 (966) 55 88 499</a>
+                <a href="tel:+375336628256">+998 88-826-25-55</a>
               </p>
             </div>
 
             <div className="flex items-center gap-4">
-              <AiOutlineHeart className="text-2xl text-gray-600" />
               <Badge count={cartItems.length} size="small" offset={[10, 0]}>
                 <AiOutlineShoppingCart
                   className="text-2xl text-gray-600 cursor-pointer"

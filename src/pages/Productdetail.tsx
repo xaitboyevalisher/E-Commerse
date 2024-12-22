@@ -211,9 +211,6 @@ const ProductDetails = ({
                   >
                     Купить
                   </Button>
-                  <Button type="text">
-                    <AiOutlineHeart size={20} />
-                  </Button>
                 </div>
               </div>
               <div className="w-full">
