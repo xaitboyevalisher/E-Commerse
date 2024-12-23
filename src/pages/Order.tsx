@@ -72,7 +72,7 @@ const OrderPage = () => {
         installSoft: values.installation || true,
         comment: values.comment || null,
       },
-      promoCode: null,
+      promoCode: values.promoCode || null,
     };
 
     const accessToken = sessionStorage.getItem("accessToken");

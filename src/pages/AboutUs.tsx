@@ -2,20 +2,13 @@ import { Row, Col, Button, Input, Layout, message } from "antd";
 import Footers from "@src/components/Headers/Footer";
 import { css } from "@emotion/react";
 import api from "../api/api";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
 
 const AboutUs = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
-  const [isDesktop, setIsDesktop] = useState(window.innerWidth >= 774);
-  useEffect(() => {
-    const Resize = () => setIsDesktop(window.innerWidth >= 774);
-    window.addEventListener("resize", Resize);
-    return () => {
-      window.removeEventListener("resize", Resize);
-    };
-  }, []);
+ 
   const { t } = useTranslation();
 
   const Submit = async () => {

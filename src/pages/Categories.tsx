@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import api from "../api/api";
 import Footers from "../components/Headers/Footer";
@@ -14,7 +14,6 @@ interface Category {
 }
 
 const Categories = () => {
-  const [isDesktop, setIsDesktop] = useState(window.innerWidth >= 774);
   const [visibleCount, setVisibleCount] = useState(8);
   const { t, i18n } = useTranslation();
 
@@ -31,15 +30,6 @@ const Categories = () => {
     },
     { keepPreviousData: true }
   );
-
-  useEffect(() => {
-    const handleResize = () => setIsDesktop(window.innerWidth >= 774);
-    window.addEventListener("resize", handleResize);
-
-    return () => {
-      window.removeEventListener("resize", handleResize);
-    };
-  }, []);
 
   if (categoriesLoading) {
     return (
