@@ -1,9 +1,10 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import api from "../api/api";
 import Footers from "../components/Headers/Footer";
 import { Card, Col, Layout, Row, Spin, Button } from "antd";
 import { useTranslation } from "react-i18next";
+import { Link } from "react-router-dom";
 
 interface Category {
   id: number;
@@ -14,6 +15,7 @@ interface Category {
 }
 
 const Categories = () => {
+  const [isDesktop, setIsDesktop] = useState(window.innerWidth >= 774);
   const [visibleCount, setVisibleCount] = useState(8);
   const { t, i18n } = useTranslation();
 
@@ -30,6 +32,15 @@ const Categories = () => {
     },
     { keepPreviousData: true }
   );
+
+  useEffect(() => {
+    const handleResize = () => setIsDesktop(window.innerWidth >= 774);
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
 
   if (categoriesLoading) {
     return (
@@ -93,15 +104,15 @@ const Categories = () => {
                       }}
                     />
 
-                    <div
-                      style={{
-                        fontSize: "14px",
-                        fontWeight: "bold",
-                        marginTop: "8px",
+                    <Link
+                      to="/product"
+                      state={{
+                        categoryId: category.id,
+                        categoryName: category.name,
                       }}
                     >
                       {category.name}
-                    </div>
+                    </Link>
                   </Card>
                 </Col>
               ))}

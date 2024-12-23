@@ -13,11 +13,13 @@ import {
 } from "antd";
 import { IoIosArrowDown, IoIosArrowUp } from "react-icons/io";
 import { FaBars, FaPhoneAlt, FaUser } from "react-icons/fa";
-import { AiOutlineShoppingCart, AiOutlineHeart } from "react-icons/ai";
+import { AiOutlineShoppingCart } from "react-icons/ai";
 import { useTranslation } from "react-i18next";
 import { Link, useNavigate, useLocation } from "react-router-dom";
-import { FiPlus, FiTrash } from "react-icons/fi";
+import { FiTrash } from "react-icons/fi";
 import { getLocks, Lock } from "../../productapi/locks";
+import { useQuery } from "@tanstack/react-query";
+import api from "../../api/api";
 
 const { Text, Title } = Typography;
 
@@ -36,6 +38,14 @@ interface HeaderProps {
   setCartItems: React.Dispatch<React.SetStateAction<CartItem[]>>;
 }
 
+interface Category {
+  id: number;
+  name: string;
+  photoPath: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
 const Header: React.FC<HeaderProps> = ({
   isDesktop,
   cartItems,
@@ -52,6 +62,20 @@ const Header: React.FC<HeaderProps> = ({
     []
   );
   const [isLoadingLocks, setIsLoadingLocks] = useState(false);
+
+  const { data: categories = [], isLoading: categoriesLoading } = useQuery<
+    Category[]
+  >(
+    ["categories", i18n.language],
+    async () => {
+      const response = await api.get("/category/get-all", {
+        params: { page: 0, size: 10 },
+        headers: { "Accept-Language": i18n.language },
+      });
+      return response.data.data;
+    },
+    { keepPreviousData: true }
+  );
 
   const QuantityChange = (id: number, quantity: number) => {
     setCartItems((prev) =>
@@ -92,11 +116,10 @@ const Header: React.FC<HeaderProps> = ({
   }, []);
 
   useEffect(() => {
-    // Close the modal if the user navigates to the /order route
     if (location.pathname === "/order") {
       setIsModalVisible(false);
     }
-  }, [location]); // This hook will run whenever the location (route) changes
+  }, [location]);
 
   const toggleCatalog = () => {
     setIsCatalogOpen(!isCatalogOpen);
@@ -154,6 +177,17 @@ const Header: React.FC<HeaderProps> = ({
 
   const { Header: AntHeader } = Layout;
 
+  if (categoriesLoading) {
+    return (
+      <div
+        className="flex justify-center items-center"
+        style={{ height: "100vh" }}
+      >
+        <Spin size="large" />
+      </div>
+    );
+  }
+
   return (
     <div>
       <div className="bg-gray-700 text-white p-2 flex flex-col md:flex-row justify-between items-center">
@@ -195,30 +229,13 @@ const Header: React.FC<HeaderProps> = ({
                     >
                       {isCatalogOpen && (
                         <div className="flex flex-col space-y-2">
-                          <Menu.Item key="21">
-                            <Link to="/product">{t("catalogItem1")}</Link>
-                          </Menu.Item>
-                          <Menu.Item key="22">
-                            <Link to="/product">{t("catalogItem2")}</Link>
-                          </Menu.Item>
-                          <Menu.Item key="23" className="text-gray-700">
-                            <Link to="/product">{t("catalogItem3")}</Link>
-                          </Menu.Item>
-                          <Menu.Item key="24" className="text-gray-700">
-                            <Link to="/product">{t("catalogItem4")}</Link>
-                          </Menu.Item>
-                          <Menu.Item key="25" className="text-gray-700">
-                            <Link to="/product">{t("catalogItem5")}</Link>
-                          </Menu.Item>
-                          <Menu.Item key="26" className="text-gray-700">
-                            <Link to="/product">{t("catalogItem6")}</Link>
-                          </Menu.Item>
-                          <Menu.Item key="27" className="text-gray-700">
-                            <Link to="/product">{t("catalogItem7")}</Link>
-                          </Menu.Item>
-                          <Menu.Item key="28" className="text-gray-700">
-                            <Link to="/product">{t("catalogItem8")}</Link>
-                          </Menu.Item>
+                          {categories.map((category) => (
+                            <Menu.Item key={category.id}>
+                              <Link to={`/product/${category.id}`}>
+                                {category.name}
+                              </Link>
+                            </Menu.Item>
+                          ))}
 
                           <Menu.Item key="29">
                             <Button
@@ -232,6 +249,7 @@ const Header: React.FC<HeaderProps> = ({
                         </div>
                       )}
                     </Menu.SubMenu>
+
                     <Menu.Item key="3">
                       <Link to="/wholesale">{t("wholesale")}</Link>
                     </Menu.Item>
@@ -271,27 +289,24 @@ const Header: React.FC<HeaderProps> = ({
                         <h2 className="font-semibold text-gray-800 border-b border-blue-500 pb-2">
                           {t("catalogItem1")}
                         </h2>
-                        <Menu.Item key="21" className="text-gray-700">
-                          <Link to="/product">{t("catalogItem2")}</Link>
-                        </Menu.Item>
-                        <Menu.Item key="22" className="text-gray-700">
-                          <Link to="/product">{t("catalogItem3")}</Link>
-                        </Menu.Item>
-                        <Menu.Item key="23" className="text-gray-700">
-                          <Link to="/product">{t("catalogItem4")}</Link>
-                        </Menu.Item>
-                        <Menu.Item key="24" className="text-gray-700">
-                          <Link to="/product">{t("catalogItem5")}</Link>
-                        </Menu.Item>
-                        <Menu.Item key="25" className="text-gray-700">
-                          <Link to="/product">{t("catalogItem6")}</Link>
-                        </Menu.Item>
-                        <Menu.Item key="26" className="text-gray-700">
-                          <Link to="/product">{t("catalogItem7")}</Link>
-                        </Menu.Item>
-                        <Menu.Item key="27" className="text-gray-700">
-                          <Link to="/product">{t("catalogItem8")}</Link>
-                        </Menu.Item>
+
+                        {categories.map((category) => (
+                          <Menu.Item
+                            key={category.id}
+                            className="text-gray-700"
+                          >
+                            <Link
+                              to="/product"
+                              state={{
+                                categoryId: category.id,
+                                categoryName: category.name,
+                              }}
+                            >
+                              {category.name}
+                            </Link>
+                          </Menu.Item>
+                        ))}
+
                         <Menu.Item
                           key="29"
                           onClick={() => navigate("/Katalog/Category")}
@@ -304,14 +319,18 @@ const Header: React.FC<HeaderProps> = ({
                         </Menu.Item>
                       </div>
 
-                      <img
-                        src="/Rectangle 728.png"
-                        alt="Elektron zamok"
-                        className="object-contain flex justify-center items-center rounded-md p-2"
-                      />
+                      {categories.length > 0 && categories[0].photoPath && (
+                        <img
+                          src={categories[0].photoPath}
+                          alt={categories[0].name}
+                          className="object-contain flex justify-center items-center rounded-md p-2"
+                          style={{ width: "351px", height: "300px" }}
+                        />
+                      )}
                     </div>
                   )}
                 </Menu.SubMenu>
+
                 <Menu.Item key="3">
                   <Link to="/wholesale">{t("wholesale")}</Link>
                 </Menu.Item>

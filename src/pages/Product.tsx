@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useParams, useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import styled from "@emotion/styled";
 import api from "../api/api";
@@ -15,7 +15,6 @@ import {
   Input,
   message,
 } from "antd";
-
 import { AiOutlineStar } from "react-icons/ai";
 import { FaCheckCircle, FaGift } from "react-icons/fa";
 import Footers from "@src/components/Headers/Footer";
@@ -53,21 +52,25 @@ export type CartItem = {
 };
 
 const ProductPage: React.FC = () => {
-  const { categoryTitle } = useParams<{ categoryTitle: string }>();
+  const { category } = useParams<{ category: string }>();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [isDesktop, setIsDesktop] = useState(window.innerWidth >= 774);
   const { t } = useTranslation();
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
+  const location = useLocation();
+  const categoryName =
+    location.state?.categoryName || "Накладные электронные замки";
 
+  // Fetch products by category
   const useProducts = () => {
     const { i18n } = useTranslation();
     return useQuery<Product[]>({
-      queryKey: ["products", i18n.language],
+      queryKey: ["products", i18n.language, category],
       queryFn: async () => {
         const response = await api.get(`/lock/get-all-by-filter`, {
-          params: { startPrice: 0, page: 0, size: 10 },
+          params: { startPrice: 0, page: currentPage - 1, size: 12, category },
           headers: { "Accept-Language": i18n.language },
         });
         return response.data.data;
@@ -118,7 +121,6 @@ const ProductPage: React.FC = () => {
       setEmail("");
     } catch (error) {
       console.error("Xatolik yuz berdi:", error);
-
       message.error("Xatolik yuz berdi, qayta urinib ko'ring.");
     }
   };
@@ -154,11 +156,7 @@ const ProductPage: React.FC = () => {
           <div className="mt-8">
             <Row gutter={[16, 16]} align="middle" className="mb-6">
               <Col xs={24} sm={24} md={18} lg={18}>
-                <h1 className="text-2xl font-semibold mb-2">
-                  {categoryTitle
-                    ? categoryTitle
-                    : "Накладные электронные замки"}
-                </h1>
+                <h1 className="text-2xl font-semibold mb-2">{categoryName}</h1>
               </Col>
             </Row>
 
@@ -204,7 +202,7 @@ const ProductPage: React.FC = () => {
               Вы недавно просмотрели
             </h2>
             <Row gutter={[16, 16]}>
-              {products.slice(0, 4).map((product) => (
+              {paginatedProducts.map((product) => (
                 <Col xs={24} sm={12} md={8} lg={6} key={product.id}>
                   <Card
                     className="rounded-md shadow-md hover:shadow-lg transition-shadow relative"
@@ -218,18 +216,18 @@ const ProductPage: React.FC = () => {
                   >
                     <div className="absolute top-2 left-2 z-10">
                       <span className="flex items-center gap-1 text-green-500">
-                        <FaCheckCircle /> В наличии
+                        <FaCheckCircle /> {t("inStock")}
                       </span>
                       {product.hasGift && (
                         <span className="flex items-center gap-1 text-yellow-500 mt-2">
-                          <FaGift /> Подарок
+                          <FaGift /> {t("gift")}
                         </span>
                       )}
                     </div>
 
                     {product.newPrice < product.price && (
                       <div className="absolute top-2 right-2 z-10">
-                        <span className="bg-white-500 text-black text-white px-2 py-1 text-xs font-bold rounded">
+                        <span className="bg-white text-black px-2 py-1 text-xs font-bold rounded">
                           SALE
                         </span>
                       </div>
@@ -265,6 +263,13 @@ const ProductPage: React.FC = () => {
                           </span>
                         )}
                       </div>
+                      <Button
+                        type="primary"
+                        onClick={() => addToCart(product)}
+                        className="w-full mt-3"
+                      >
+                        {t("addToCart")}
+                      </Button>
                     </div>
                   </Card>
                 </Col>
