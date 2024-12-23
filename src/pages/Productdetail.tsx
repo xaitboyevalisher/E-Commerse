@@ -5,6 +5,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import api from "../api/api";
 import { useState, useEffect } from "react";
 import { CartItem } from "../App";
+import { FiRefreshCcw } from "react-icons/fi";
 
 const { Option } = Select;
 const { TabPane } = Tabs;
@@ -28,7 +29,7 @@ interface Comment {
   text: string;
   stars: number;
   createdAt: string;
-  lockId: number; // lockId qo'shildi
+  lockId: number;
 }
 
 const Locks = async (): Promise<Lock[]> => {
@@ -51,17 +52,18 @@ const fetchComments = async (lockId: number): Promise<Comment[]> => {
 const addComment = async (newComment: Comment) => {
   const accessToken = sessionStorage.getItem("accessToken");
 
-  if (!accessToken)
-    try {
-      const response = await api.post("/comment/add", newComment, {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-      });
-      return response.data;
-    } catch (error) {
-      throw new Error("Failed to add comment");
-    }
+  if (!accessToken) throw new Error("No access token found");
+
+  try {
+    const response = await api.post("/comment/add", newComment, {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    throw new Error("Failed to add comment");
+  }
 };
 
 const ProductDetails = ({
@@ -77,6 +79,7 @@ const ProductDetails = ({
   const [email, setEmail] = useState("");
   const [text, setText] = useState("");
   const [stars, setStars] = useState(5);
+  const [visibleComments, setVisibleComments] = useState(5);
   const [lockId, setLockId] = useState<number | null>(null);
 
   const { data, isLoading, error } = useQuery({
@@ -92,11 +95,7 @@ const ProductDetails = ({
     }
   }, [lock]);
 
-  const {
-    data: comments,
-    isLoading: commentsLoading,
-    error: commentsError,
-  } = useQuery({
+  const { data: comments } = useQuery({
     queryKey: ["comments", lockId],
     queryFn: () => (lockId ? fetchComments(lockId) : []),
     enabled: !!lockId,
@@ -116,6 +115,12 @@ const ProductDetails = ({
       message.error("Ошибка при добавлении отзыва: " + error.message);
     },
   });
+
+  const handleShowMore = () => {
+    if (comments) {
+      setVisibleComments((prev) => Math.min(prev + 5, comments.length));
+    }
+  };
 
   const handleSubmit = () => {
     if (!name || !email || !text) {
@@ -167,183 +172,200 @@ const ProductDetails = ({
 
   return (
     <div className="container mx-auto p-4">
-      <div className="container mx-auto p-4">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div className="flex flex-col">
-            <img
-              src={selectedPhoto || lock.photos[0]}
-              alt={lock.name}
-              className="w-full h-auto rounded-lg shadow-md"
-            />
-            <div className="flex justify-start mt-4 gap-2">
-              {lock.photos.map((photo, index) => (
-                <img
-                  key={index}
-                  src={photo}
-                  alt={`Thumbnail ${index + 1}`}
-                  onClick={() => setSelectedPhoto(photo)}
-                  className={`w-16 h-16 object-cover rounded-md cursor-pointer ${
-                    selectedPhoto === photo ? "border-2 border-blue-500" : ""
-                  }`}
-                />
-              ))}
-            </div>
-          </div>
-
-          <div>
-            <h1 className="text-2xl font-semibold">{lock.name}</h1>
-            <div className="flex items-center gap-2 mt-2">
-              <Rate disabled defaultValue={4} />
-              <span className="text-gray-500">(22 отзывов)</span>
-            </div>
-
-            <div className="mt-6 flex flex-col gap-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-xl font-semibold">{lock.price}₽</p>
-                  <p className="text-sm line-through text-gray-500">37 000₽</p>
-                </div>
-                <div className="flex gap-2">
-                  <Button
-                    type="primary"
-                    onClick={handleAddToBasket}
-                    loading={isAddingToBasket}
-                  >
-                    Купить
-                  </Button>
-                </div>
-              </div>
-              <div className="w-full">
-                <Collapse>
-                  <Panel header="Оплата" key="1">
-                    <p>
-                      Оплата при получении товара, картой онлайн, Google Pay и
-                      другими способами.
-                    </p>
-                  </Panel>
-                  <Panel header="Монтаж и доставка" key="2">
-                    <p>Информация о монтаже и доставке.</p>
-                  </Panel>
-                  <Panel header="Гарантии и выгода" key="3">
-                    <p>Информация о гарантии и выгоде.</p>
-                  </Panel>
-                </Collapse>
-              </div>
-            </div>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="flex flex-col">
+          <img
+            src={selectedPhoto || lock.photos[0]}
+            alt={lock.name}
+            className="w-full h-auto rounded-lg shadow-md"
+          />
+          <div className="flex justify-start mt-4 gap-2">
+            {lock.photos.map((photo, index) => (
+              <img
+                key={index}
+                src={photo}
+                alt={`Thumbnail ${index + 1}`}
+                onClick={() => setSelectedPhoto(photo)}
+                className={`w-16 h-16 object-cover rounded-md cursor-pointer ${
+                  selectedPhoto === photo ? "border-2 border-blue-500" : ""
+                }`}
+              />
+            ))}
           </div>
         </div>
 
-        <div className="mt-8">
-          <Tabs defaultActiveKey="1">
-            <TabPane tab="Характеристики" key="2">
-              <div className="grid grid-cols-2 gap-4 text-gray-700">
-                <div>
-                  <p className="font-medium">Память на количество карт:</p>
-                  <p>2033</p>
-                </div>
-                <div>
-                  <p className="font-medium">Тип двери:</p>
-                  <p>Деревянная, металлическая</p>
-                </div>
-                <div>
-                  <p className="font-medium">Приложение:</p>
-                  <p>Нет</p>
-                </div>
-                <div>
-                  <p className="font-medium">Толщина двери:</p>
-                  <p>38-55 мм</p>
-                </div>
-                <div>
-                  <p className="font-medium">Материал:</p>
-                  <p>Сталь, силиконовые вставки</p>
-                </div>
-                <div>
-                  <p className="font-medium">Размеры:</p>
-                  <p>302мм × 43мм × 22.55мм</p>
-                </div>
-                <div>
-                  <p className="font-medium">Цвет:</p>
-                  <p>Черный, хром</p>
-                </div>
-                <div>
-                  <p className="font-medium">Вес:</p>
-                  <p>300 г</p>
-                </div>
-              </div>
-            </TabPane>
+        <div>
+          <h1 className="text-2xl font-semibold">{lock.name}</h1>
+          <div className="flex items-center gap-2 mt-2">
+            <Rate disabled defaultValue={4} />
+            <span className="text-gray-500">(22 отзывов)</span>
+          </div>
 
-            <TabPane tab="Описание" key="3">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <p>{lock.description || "Описание отсутствует"}</p>
+          <div className="mt-6 flex flex-col gap-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-xl font-semibold">{lock.price}₽</p>
+                <p className="text-sm line-through text-gray-500">37 000₽</p>
               </div>
-            </TabPane>
+              <div className="flex gap-2">
+                <Button
+                  type="primary"
+                  onClick={handleAddToBasket}
+                  loading={isAddingToBasket}
+                >
+                  Купить
+                </Button>
+                <Button type="text">
+                  <AiOutlineHeart size={20} />
+                </Button>
+              </div>
+            </div>
+            <div className="w-full">
+              <Collapse>
+                <Panel header="Оплата" key="1">
+                  <p>
+                    Оплата при получении товара, картой онлайн, Google Pay и
+                    другими способами.
+                  </p>
+                </Panel>
+                <Panel header="Монтаж и доставка" key="2">
+                  <p>Информация о монтаже и доставке.</p>
+                </Panel>
+                <Panel header="Гарантии и выгода" key="3">
+                  <p>Информация о гарантии и выгоде.</p>
+                </Panel>
+              </Collapse>
+            </div>
+          </div>
+        </div>
+      </div>
 
-            <TabPane tab="Отзывы" key="4">
-              {commentsLoading ? (
-                <Spin size="large" />
-              ) : commentsError instanceof Error ? (
-                <div>Ошибка при загрузке отзывов: {commentsError.message}</div>
-              ) : (
-                <>
-                  <div className="mb-6">
-                    <h3 className="text-xl font-semibold">Добавить отзыв</h3>
-                    <input
-                      type="text"
-                      placeholder="Ваше имя"
-                      value={name}
-                      onChange={(e) => setName(e.target.value)}
-                      className="mt-2 p-2 w-full border rounded-md"
-                    />
-                    <input
-                      type="email"
-                      placeholder="Ваш email"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      className="mt-2 p-2 w-full border rounded-md"
-                    />
-                    <textarea
-                      placeholder="Ваш отзыв"
-                      value={text}
-                      onChange={(e) => setText(e.target.value)}
-                      className="mt-2 p-2 w-full border rounded-md"
-                    />
-                    <Rate onChange={setStars} value={stars} className="mt-2" />
-                    <Button
-                      type="primary"
-                      onClick={handleSubmit}
-                      loading={commentMutation.isLoading}
-                      className="mt-2"
-                    >
-                      Оставить отзыв
-                    </Button>
-                  </div>
-                  {comments?.length ? (
+      <div className="mt-8">
+        <Tabs defaultActiveKey="1">
+          <TabPane tab="Характеристики" key="2">
+            <div className="grid grid-cols-2 gap-4 text-gray-700">
+              <div>
+                <p className="font-medium">Память на количество карт:</p>
+                <p>2033</p>
+              </div>
+              <div>
+                <p className="font-medium">Тип двери:</p>
+                <p>Деревянная, металлическая</p>
+              </div>
+              <div>
+                <p className="font-medium">Приложение:</p>
+                <p>Нет</p>
+              </div>
+              <div>
+                <p className="font-medium">Толщина двери:</p>
+                <p>38-55 мм</p>
+              </div>
+              <div>
+                <p className="font-medium">Материал:</p>
+                <p>Сталь, силиконовые вставки</p>
+              </div>
+              <div>
+                <p className="font-medium">Размеры:</p>
+                <p>302мм × 43мм × 22.55мм</p>
+              </div>
+              <div>
+                <p className="font-medium">Цвет:</p>
+                <p>Черный, хром</p>
+              </div>
+              <div>
+                <p className="font-medium">Вес:</p>
+                <p>300 г</p>
+              </div>
+            </div>
+          </TabPane>
+
+          <TabPane tab="Описание" key="3">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <p>{lock.description || "Описание отсутствует"}</p>
+            </div>
+          </TabPane>
+
+          <TabPane tab="Отзывы" key="4">
+            <div className="flex flex-col lg:flex-row gap-8">
+              <div className="lg:w-2/3">
+                {comments?.length ? (
+                  <>
                     <div className="space-y-4">
-                      {comments.map((comment, index) => (
-                        <div key={index} className="border p-4 rounded-lg">
-                          <h4 className="text-lg font-semibold">
-                            {comment.name}
-                          </h4>
-                          <p className="text-sm text-gray-600">
-                            {comment.email}
-                          </p>
-                          <Rate
-                            disabled
-                            value={comment.stars}
-                            className="mt-2"
-                          />
-                          <p className="mt-2">{comment.text}</p>
-                        </div>
-                      ))}
+                      {comments
+                        .slice(0, visibleComments)
+                        .map((comment, index) => (
+                          <div key={index} className="border p-4 rounded-lg">
+                            <div className="flex items-center justify-between">
+                              <h4 className="text-lg font-semibold">
+                                {comment.name}
+                              </h4>
+                              <span className="text-sm text-gray-500">
+                                {comment.createdAt}
+                              </span>
+                            </div>
+                            <p className="text-sm text-gray-600">
+                              {comment.email}
+                            </p>
+                            <Rate disabled value={comment.stars} />
+                            <p className="mt-2">{comment.text}</p>
+                          </div>
+                        ))}
                     </div>
-                  ) : (
-                    <div className="mt-4">Нет отзывов</div>
-                  )}
-                </>
-              )}
-            </TabPane>
-          </Tabs>
-        </div>
+                    {visibleComments < comments.length && (
+                      <div className="flex justify-center mt-4">
+                        <Button
+                          type="link"
+                          onClick={handleShowMore}
+                          className="flex items-center gap-2"
+                        >
+                          <FiRefreshCcw size={18} />
+                          <span>Показать еще</span>
+                        </Button>
+                      </div>
+                    )}
+                  </>
+                ) : (
+                  <div className="mt-4">Нет отзывов</div>
+                )}
+              </div>
+              <div className="lg:w-1/3 border p-4 rounded-lg">
+                <h3 className="text-xl font-semibold mb-4">Добавить отзыв</h3>
+                <div className="mb-4">
+                  <span className="block font-medium mb-2">Ваша оценка:</span>
+                  <Rate onChange={(value) => setStars(value)} value={stars} />
+                </div>
+                <input
+                  type="text"
+                  placeholder="Ваше имя"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  className="mt-2 p-2 w-full border rounded-md"
+                />
+                <input
+                  type="email"
+                  placeholder="Ваш email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="mt-2 p-2 w-full border rounded-md"
+                />
+                <textarea
+                  placeholder="Ваш отзыв"
+                  value={text}
+                  onChange={(e) => setText(e.target.value)}
+                  className="mt-2 p-2 w-full border rounded-md"
+                />
+                <Button
+                  type="primary"
+                  onClick={handleSubmit}
+                  loading={commentMutation.isLoading}
+                  className="mt-4 w-full"
+                >
+                  Оставить отзыв
+                </Button>
+              </div>
+            </div>
+          </TabPane>
+        </Tabs>
       </div>
     </div>
   );
